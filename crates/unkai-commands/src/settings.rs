@@ -1023,7 +1023,8 @@ pub async fn remove_custom_theme(
         // the default so the UI doesn't try to render a missing
         // file on next launch.
         if s.theme_name == id {
-            s.theme_name = "cerberus".into();
+            s.theme_name = "matte-black".into();
+            s.theme_mode = unkai_core::models::ThemeMode::Dark;
         }
         app_settings::save_settings(&profile.app_settings_file(), &s)?;
         path

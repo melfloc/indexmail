@@ -1,0 +1,14 @@
+
+> ui@0.0.0 check
+> npm run paraglide:compile && svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json
+
+
+> ui@0.0.0 paraglide:compile
+> paraglide-js compile --project ./project.inlang --outdir ./src/paraglide
+
+ℹ [paraglide-js] Compiling inlang project ...
+✔ [paraglide-js] Successfully compiled inlang project.
+Loading svelte-check in workspace: /home/abraham/Projects/indexmail/unkai-mail/ui
+Getting Svelte diagnostics...
+
+svelte-check found 0 errors and 0 warnings

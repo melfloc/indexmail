@@ -31,6 +31,7 @@
   import {
     STOCK_THEMES,
     applyTheme,
+    isDarkOnlyTheme,
     type ThemeMode,
     type ThemeOption,
   } from './theme'
@@ -66,6 +67,7 @@
   const LOCALE_LABELS: Record<string, string> = {
     en: 'English',
     de: 'Deutsch',
+    es: 'Español',
   }
 
   /** Drives the "Restart required" prompt that appears after
@@ -156,18 +158,18 @@
   // borrows `share-links` since the family has no
   // theme/palette glyph yet.
   const CATEGORIES: CategoryEntry[] = [
-    { id: 'general', label: 'General', icon: 'settings' },
+    { id: 'general', label: m.settings_category_general(), icon: 'settings' },
     // #534 — browser-style profiles: separate storage universes in
     // one install.  `group` reads as "several people / identities"
     // without adding a new SVG to the icon family.  Placed right
     // under General: profiles frame everything below them (every
     // other category's settings live *inside* a profile).
     { id: 'profiles', label: m.settings_profiles_category(), icon: 'group' },
-    { id: 'design', label: 'Design', icon: 'design-palette' },
-    { id: 'mail', label: 'E-Mail', icon: 'email-envelope' },
-    { id: 'calendar', label: 'Calendar', icon: 'calendar' },
-    { id: 'nextcloud', label: 'Nextcloud', icon: 'cloud' },
-    { id: 'security', label: 'Security', icon: 'lock' },
+    { id: 'design', label: m.settings_category_design(), icon: 'design-palette' },
+    { id: 'mail', label: m.settings_category_mail(), icon: 'email-envelope' },
+    { id: 'calendar', label: m.settings_category_calendar(), icon: 'calendar' },
+    { id: 'nextcloud', label: m.settings_category_nextcloud(), icon: 'cloud' },
+    { id: 'security', label: m.settings_category_security(), icon: 'lock' },
     // #439 — the local MCP interface for the user's own AI
     // agents (BYO model).  Localized from day one per the lazy
     // paraglide migration rule — it's a brand-new string.
@@ -177,7 +179,7 @@
     // loop) communicates "this is the page where state moves
     // back and forth between machines" better than a generic
     // archive icon.
-    { id: 'backup', label: 'Backup & Sync', icon: 'sync' },
+    { id: 'backup', label: m.settings_category_backup(), icon: 'sync' },
     // #229 — the in-app updater.  `download` (arrow into a tray)
     // reads as "something arrives here"; the rail's update badge
     // deep-links straight to this page.  Last in the nav: like
@@ -297,8 +299,8 @@
     background_sync_interval_secs: 300,
     notifications_enabled: true,
     start_minimized: false,
-    theme_name: 'cerberus',
-    theme_mode: 'system',
+    theme_name: 'matte-black',
+    theme_mode: 'dark',
     mail_html_white_background: true,
     auto_load_remote_images: false,
     auto_advance_after_remove: true,
@@ -774,6 +776,9 @@
       through `scheduleSave` so the persistence + parent-notify path
       is unchanged. */
   function onThemeChange(name: string, mode: ThemeMode) {
+    // Dark-only themes ignore the mode request at the DOM level;
+    // persist Dark too so the picker and the settings file agree.
+    if (isDarkOnlyTheme(name)) mode = 'dark'
     appSettings.theme_name = name
     appSettings.theme_mode = mode
     applyTheme(name, mode)
@@ -1241,7 +1246,7 @@
             <button
               type="button"
               class="w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors duration-150 ease-out {active
-                ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+                ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
                 : 'hover:bg-primary-500/10'}"
               onclick={() => (activeCategory = cat.id)}
               aria-current={active ? 'page' : undefined}
@@ -1896,15 +1901,22 @@
                 class="btn btn-sm {appSettings.theme_mode === mode
                   ? 'preset-filled-primary-500'
                   : 'preset-outlined-surface-500'}"
+                disabled={mode !== 'dark' && isDarkOnlyTheme(appSettings.theme_name)}
                 onclick={() => onThemeChange(appSettings.theme_name, mode)}
               >
                 {mode === 'system' ? 'Follow OS' : mode === 'light' ? 'Light' : 'Dark'}
               </button>
             {/each}
           </div>
-          <p class="text-xs text-surface-400 mt-1">
-            "Follow OS" tracks your system light/dark preference live.
-          </p>
+          {#if isDarkOnlyTheme(appSettings.theme_name)}
+            <p class="text-xs text-surface-400 mt-1">
+              {m.settings_design_theme_dark_only_hint()}
+            </p>
+          {:else}
+            <p class="text-xs text-surface-400 mt-1">
+              "Follow OS" tracks your system light/dark preference live.
+            </p>
+          {/if}
         </div>
 
         <!-- UI scale (#191).  Auto by default — picks a sensible
@@ -2728,7 +2740,7 @@
      `startRetrust` itself errored (no modal opens) so the user
      still sees what went wrong. -->
 {#if trustError && !trustPrompt}
-  <div class="fixed bottom-4 right-4 z-50 max-w-sm bg-error-500/95 text-white text-sm rounded-lg shadow-lg px-3 py-2">
+  <div class="fixed bottom-4 right-4 z-50 max-w-sm bg-error-500/95 text-error-contrast-500 text-sm rounded-lg shadow-lg px-3 py-2">
     {trustError}
     <button
       class="ml-2 underline"

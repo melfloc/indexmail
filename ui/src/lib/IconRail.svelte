@@ -329,14 +329,14 @@
   // the order canonical so we don't end up with the icons
   // shuffling when capabilities flip.
   const MAIN_NAV: NavEntry[] = [
-    { match: 'contacts', label: 'Contacts', icon: 'contacts' },
-    { match: 'calendar', label: 'Calendar', icon: 'calendar' },
-    { match: 'files', label: 'Files', icon: 'files' },
-    { match: 'shares', label: 'Share links', icon: 'share-links' },
-    { match: 'forms', label: 'Forms', icon: 'forms' },
-    { match: 'talk', label: 'Talk', icon: 'meetings' },
-    { match: 'tasks', label: 'Tasks', icon: 'tasks' },
-    { match: 'notes', label: 'Notes', icon: 'notes' },
+    { match: 'contacts', label: m.rail_nav_contacts(), icon: 'contacts' },
+    { match: 'calendar', label: m.rail_nav_calendar(), icon: 'calendar' },
+    { match: 'files', label: m.rail_nav_files(), icon: 'files' },
+    { match: 'shares', label: m.rail_nav_shares(), icon: 'share-links' },
+    { match: 'forms', label: m.rail_nav_forms(), icon: 'forms' },
+    { match: 'talk', label: m.rail_nav_talk(), icon: 'meetings' },
+    { match: 'tasks', label: m.rail_nav_tasks(), icon: 'tasks' },
+    { match: 'notes', label: m.rail_nav_notes(), icon: 'notes' },
   ]
 
   /** Filtered view of `MAIN_NAV` honouring the Nextcloud
@@ -383,10 +383,10 @@
       class="relative w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-xs font-semibold
              transition-colors
              {allActive
-               ? 'bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-surface-100 dark:ring-offset-surface-800 ring-primary-500'
+               ? 'bg-primary-500 text-primary-contrast-500 ring-2 ring-offset-2 ring-offset-surface-100 dark:ring-offset-surface-800 ring-primary-500'
                : 'bg-surface-300 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-400 dark:hover:bg-surface-600'}"
-      title="All inboxes (unified)"
-      aria-label="All inboxes"
+      title={m.rail_all_inboxes()}
+      aria-label={m.rail_all_inboxes()}
       onclick={() => onselectaccount('__all__')}
     >
       <!-- Inbox glyph matches the Mail rail icon + the "All
@@ -440,7 +440,7 @@
       class="relative w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-xs font-semibold
              transition-colors
              {active
-               ? 'bg-primary-500 text-white ring-2 ring-offset-2 ring-offset-surface-100 dark:ring-offset-surface-800 ring-primary-500'
+               ? 'bg-primary-500 text-primary-contrast-500 ring-2 ring-offset-2 ring-offset-surface-100 dark:ring-offset-surface-800 ring-primary-500'
                : 'bg-surface-300 dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-400 dark:hover:bg-surface-600'}"
       title={`${a.display_name || a.email}${unread > 0 ? ` — ${unread} unread` : ''}`}
       aria-label="Switch to {a.display_name || a.email}"
@@ -509,7 +509,7 @@
                  flex items-center justify-center font-semibold
                  {talkUnreadHasMention
                    ? 'bg-red-500 text-white'
-                   : 'bg-primary-500 text-white'}"
+                   : 'bg-primary-500 text-primary-contrast-500'}"
           title={talkUnreadHasMention ? 'You were mentioned' : 'Unread Talk messages'}
         >{talkUnreadTotal}</span>
       {/if}
@@ -552,8 +552,8 @@
              {currentView === 'settings'
                ? 'bg-primary-500/15 text-primary-500'
                : 'text-surface-600 dark:text-surface-300 hover:bg-primary-500/10'}"
-      title="Settings"
-      aria-label="Settings"
+      title={m.rail_settings()}
+      aria-label={m.rail_settings()}
       data-tour="rail-settings"
       onclick={() => onselectview('settings')}
     >
@@ -581,7 +581,7 @@
       >
         {#if updateBadgeVisible()}
           <span
-            class="flex items-center justify-center w-4 h-4 rounded-full bg-primary-500 text-white ring-2 ring-surface-100 dark:ring-surface-800"
+            class="flex items-center justify-center w-4 h-4 rounded-full bg-primary-500 text-primary-contrast-500 ring-2 ring-surface-100 dark:ring-surface-800"
           >
             <Icon name="download" size={10} />
           </span>

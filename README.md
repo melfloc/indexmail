@@ -13,6 +13,12 @@
 
 </div>
 
+> **Index Mail fork.** This repository is a GPL-3.0 fork of Unkai Mail that
+> keeps the upstream mail engine and security defaults, and ships the
+> **Matte Black** theme plus a partial Spanish locale. See
+> [`docs/fork-notes.md`](docs/fork-notes.md) for scope, status and pending
+> debt. The fork is not affiliated with or endorsed by the Unkai maintainers.
+
 > ⚠️ **Project status — early releases.** Mail (IMAP / SMTP / JMAP)
 > works end-to-end with an encrypted local cache, end-to-end mail
 > encryption (OpenPGP + S/MIME), multi-profile support, and a deep

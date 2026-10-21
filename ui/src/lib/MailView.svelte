@@ -2656,20 +2656,20 @@
         <button
           class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center hover:bg-primary-500/15 hover:text-primary-500 hover:border-primary-500/40"
           onclick={() => email && uid != null && onreply?.({ ...email, uid })}
-          title="Reply"
-          aria-label="Reply"
+          title={m.mail_view_action_reply()}
+          aria-label={m.mail_view_action_reply()}
         ><Icon name="reply" size={16} /></button>
         <button
           class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center hover:bg-primary-500/15 hover:text-primary-500 hover:border-primary-500/40"
           onclick={() => email && uid != null && onreplyall?.({ ...email, uid })}
-          title="Reply to everyone"
-          aria-label="Reply to everyone"
+          title={m.mail_view_action_reply_all()}
+          aria-label={m.mail_view_action_reply_all()}
         ><Icon name="reply-all" size={16} /></button>
         <button
           class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center hover:bg-primary-500/15 hover:text-primary-500 hover:border-primary-500/40"
           onclick={() => email && uid != null && onforward?.({ ...email, uid })}
-          title="Forward"
-          aria-label="Forward"
+          title={m.mail_view_action_forward()}
+          aria-label={m.mail_view_action_forward()}
         ><Icon name="forward" size={16} /></button>
         {#if onrespondwithmeeting}
           <button
@@ -2789,20 +2789,20 @@
       <button
         class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center hover:bg-primary-500/15 hover:text-primary-500 hover:border-primary-500/40"
         onclick={() => (moveMenuOpen = true)}
-        title="Move this message to a different folder"
-        aria-label="Move to folder"
+        title={m.maillist_action_move()}
+        aria-label={m.maillist_action_move()}
       ><Icon name="move-to-folder" size={16} /></button>
       <button
         class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center hover:bg-primary-500/15 hover:text-primary-500 hover:border-primary-500/40"
         onclick={archiveMessage}
-        title="Move this message to the Archive folder"
-        aria-label="Archive"
+        title={m.mail_view_action_archive()}
+        aria-label={m.mail_view_action_archive()}
       ><Icon name="archive" size={16} /></button>
       <button
         class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center hover:bg-error-500/15 hover:text-error-500 hover:border-error-500/40"
         onclick={deleteMessage}
-        title="Move this message to Trash (permanently deletes if already in Trash or if the account has no Trash folder)"
-        aria-label="Delete"
+        title={m.mail_view_action_delete()}
+        aria-label={m.mail_view_action_delete()}
       ><Icon name="trash" size={16} /></button>
     </div>
 

@@ -2123,7 +2123,7 @@
               />
               <button
                 type="button"
-                class="text-xs px-2 py-1 rounded-lg bg-primary-500 text-white hover:bg-primary-600"
+                class="text-xs px-2 py-1 rounded-lg bg-primary-500 text-primary-contrast-500 hover:bg-primary-600"
                 onclick={commitLink}
               >Apply</button>
               {#if linkPopoverHasExisting}

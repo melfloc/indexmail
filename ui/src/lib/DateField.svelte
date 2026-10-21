@@ -341,7 +341,7 @@
             <button
               type="button"
               class="text-sm h-8 rounded-lg flex items-center justify-center {isSelected
-                ? 'bg-primary-500 text-white font-semibold'
+                ? 'bg-primary-500 text-primary-contrast-500 font-semibold'
                 : isToday
                   ? 'border border-primary-500 text-primary-500'
                   : inMonth
@@ -368,7 +368,7 @@
             <button
               type="button"
               class="text-sm h-10 rounded-lg flex items-center justify-center {isSelected
-                ? 'bg-primary-500 text-white font-semibold'
+                ? 'bg-primary-500 text-primary-contrast-500 font-semibold'
                 : isToday
                   ? 'border border-primary-500 text-primary-500'
                   : 'hover:bg-surface-200 dark:hover:bg-surface-800'}"
@@ -387,7 +387,7 @@
             <button
               type="button"
               class="text-sm h-10 rounded-lg flex items-center justify-center {isSelected
-                ? 'bg-primary-500 text-white font-semibold'
+                ? 'bg-primary-500 text-primary-contrast-500 font-semibold'
                 : isToday
                   ? 'border border-primary-500 text-primary-500'
                   : 'hover:bg-surface-200 dark:hover:bg-surface-800'}"
