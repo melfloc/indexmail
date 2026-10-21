@@ -188,7 +188,7 @@
           aria-selected={isSelected}
           data-idx={i}
           class="px-3 py-2 text-sm cursor-pointer flex items-center justify-between gap-2 {isSelected
-            ? 'bg-primary-500 text-white'
+            ? 'bg-primary-500 text-primary-contrast-500'
             : isActive
               ? 'bg-primary-500/15'
               : 'hover:bg-surface-200 dark:hover:bg-surface-800'}"

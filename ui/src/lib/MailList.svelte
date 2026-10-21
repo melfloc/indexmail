@@ -1968,10 +1968,10 @@
             role="button"
             tabindex="0"
             aria-pressed={selected}
-            class="w-full text-left {row.isSibling ? 'pl-12' : 'pl-3'} pr-4 py-3 border-b border-l-[3px] border-surface-100 dark:border-surface-800 transition-colors duration-150 ease-out cursor-pointer
+            class="w-full text-left {row.isSibling ? 'pl-12' : 'pl-3'} pr-4 py-2 border-b border-l-[3px] border-surface-100 dark:border-surface-700 transition-colors duration-150 ease-out cursor-pointer
               {!env.is_read ? 'border-l-primary-500' : 'border-l-transparent'}
               {selected
-                ? 'bg-primary-500/12 ring-1 ring-inset ring-primary-500/30'
+                ? 'bg-primary-500/15 ring-1 ring-inset ring-primary-500/30'
                 : multi
                   ? 'bg-primary-500/15 hover:bg-primary-500/20'
                   : env.is_starred
@@ -2023,11 +2023,11 @@
                 photo={senderPhoto}
                 displayName={senderInitialName}
                 seed={senderSeed}
-                size={36}
+                size={32}
               />
               <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between mb-1 gap-2">
-                  <span class="text-sm {!env.is_read ? 'font-semibold' : 'font-normal'} truncate pr-2">
+                  <span class="text-[0.9em] {!env.is_read ? 'font-semibold' : 'font-medium text-surface-400'} truncate pr-2">
                     {env.from || '(unknown sender)'}
                   </span>
                   <!-- Date + crypto pill stacked vertically on the right
@@ -2038,7 +2038,7 @@
                        least once); plain mail keeps the original
                        date-only layout. -->
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
-                    <span class="text-xs {!env.is_read ? 'text-primary-500 font-medium' : 'text-surface-500'}">
+                    <span class="text-[0.8em] {!env.is_read ? 'text-primary-500 font-medium' : 'text-surface-500'}">
                       {formatDate(env.date)}
                     </span>
                     {#if env.protection === 'encrypted' || env.protection === 'signed-and-encrypted'}
@@ -2057,7 +2057,7 @@
                     {/if}
                   </div>
                 </div>
-                <p class="text-sm {!env.is_read ? 'font-medium' : ''} truncate flex items-center gap-1.5">
+                <p class="text-[0.94em] {!env.is_read ? 'font-medium' : ''} truncate flex items-center gap-1.5">
                   <!-- Pin + flag markers (#414) lead the subject —
                        the same slot the reply icon uses, so a row
                        with several markers reads as one icon strip. -->
@@ -2187,7 +2187,7 @@
           >
             <button
               type="button"
-              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn shadow-sm {env.is_starred ? 'text-amber-500' : ''}"
+              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn {env.is_starred ? 'text-amber-500' : ''}"
               title={env.is_starred ? m.mail_action_unflag() : m.mail_action_flag()}
               aria-label={env.is_starred ? m.mail_action_unflag() : m.mail_action_flag()}
               onclick={(e) => {
@@ -2197,7 +2197,7 @@
             ><Icon name="flag" size={16} /></button>
             <button
               type="button"
-              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn shadow-sm {env.is_pinned ? 'text-primary-500' : ''}"
+              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn {env.is_pinned ? 'text-primary-500' : ''}"
               title={env.is_pinned ? m.mail_action_unpin() : m.mail_action_pin()}
               aria-label={env.is_pinned ? m.mail_action_unpin() : m.mail_action_pin()}
               onclick={(e) => {
@@ -2207,7 +2207,7 @@
             ><Icon name="pin" size={16} /></button>
             <button
               type="button"
-              class="w-7 h-7 rounded-lg flex items-center justify-center text-sm quick-action-btn shadow-sm"
+              class="w-7 h-7 rounded-lg flex items-center justify-center text-sm quick-action-btn"
               title={env.is_read ? m.maillist_action_mark_unread() : m.maillist_action_mark_read()}
               aria-label={env.is_read ? m.maillist_action_mark_unread() : m.maillist_action_mark_read()}
               onclick={(e) => {
@@ -2217,7 +2217,7 @@
             ><Icon name={env.is_read ? 'unread' : 'read'} size={16} /></button>
             <button
               type="button"
-              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn shadow-sm"
+              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn"
               title={m.maillist_action_move()}
               aria-label={m.maillist_action_move()}
               onclick={(e) => {
@@ -2233,7 +2233,7 @@
                    reads as one decision point. -->
               <button
                 type="button"
-                class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn shadow-sm"
+                class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn"
                 title={m.maillist_action_restore()}
                 aria-label={m.maillist_action_restore()}
                 onclick={(e) => {
@@ -2244,7 +2244,7 @@
             {/if}
             <button
               type="button"
-              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn quick-action-btn-danger shadow-sm"
+              class="w-7 h-7 rounded-lg flex items-center justify-center quick-action-btn quick-action-btn-danger"
               title={m.maillist_action_delete()}
               aria-label={m.maillist_action_delete()}
               onclick={(e) => {
@@ -2429,7 +2429,7 @@
           <button
             type="button"
             class="px-2 py-0.5 text-xs {active
-              ? 'bg-primary-500 text-white'
+              ? 'bg-primary-500 text-primary-contrast-500'
               : 'hover:bg-surface-200 dark:hover:bg-surface-800'}"
             onclick={() => {
               if (!contextMenu) return

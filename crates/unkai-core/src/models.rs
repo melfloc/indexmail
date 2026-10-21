@@ -425,8 +425,10 @@ impl Default for AppSettings {
             background_sync_interval_secs: 60,
             notifications_enabled: true,
             start_minimized: false,
-            theme_name: "cerberus".to_string(),
-            theme_mode: ThemeMode::System,
+            // Index Mail ships Matte Black as the first-run identity;
+            // it is a dark-only theme, so the mode starts pinned dark.
+            theme_name: "matte-black".to_string(),
+            theme_mode: ThemeMode::Dark,
             mail_html_white_background: true,
             auto_load_remote_images: false,
             auto_advance_after_remove: true,

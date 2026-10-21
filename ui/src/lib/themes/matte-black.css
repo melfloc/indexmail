@@ -1,0 +1,306 @@
+/* Matte Black — Index Mail's bundled theme.
+ *
+ * Derived from the Omarchy "Matte Black" desktop palette:
+ *   bg #121212 · sunken #0d0d0d · panel #161616 · raised #1e1e1e
+ *   border #242424 · selection #2a2a2a · text #d4d4d4 · text-dim #8a8a8d
+ *   accent #e68e0d (hover #f5a326 · active #c97b0b)
+ *
+ * Surface scale mapping (dark mode is the only mode this theme
+ * supports — see `lib/theme.ts`):
+ *   50  #d4d4d4  primary text
+ *   400 #98989b  secondary text
+ *   500 #8a8a8d  dim text / muted labels
+ *   600 #2a2a2a  selection
+ *   700 #242424  borders
+ *   800 #1e1e1e  raised surfaces
+ *   900 #161616  panels
+ *   950 #0d0d0d  sunken sidebars / toolbars
+ *   root background: #121212
+ *
+ * The theme follows Skeleton v5's `[data-theme='…']` token format.
+ * Tailwind radius overrides live here too so panels land on 8 px and
+ * rows/buttons on 6 px without touching every component.
+ */
+
+[data-theme='matte-black'] {
+	--spacing: 0.24rem; /* compact density — 4% tighter than the 0.25rem default */
+	--text-scaling: 1;
+	--typo-base--font-family: 'Adwaita Sans', Inter, 'Noto Sans', system-ui, sans-serif;
+	--typo-base--font-size: inherit;
+	--typo-base--color-light: var(--color-surface-950);
+	--typo-base--color-dark: var(--color-surface-50);
+	--typo-base--line-height: 1.45;
+	--typo-base--font-weight: normal;
+	--typo-base--font-style: normal;
+	--typo-base--letter-spacing: 0em;
+	--typo-base--font-stretch: inherit;
+	--typo-base--font-kerning: inherit;
+	--typo-base--text-shadow: inherit;
+	--typo-base--word-spacing: inherit;
+	--typo-base--hyphens: inherit;
+	--typo-base--text-transform: inherit;
+	--typo-heading--font-family: inherit;
+	--typo-heading--color-light: inherit;
+	--typo-heading--color-dark: inherit;
+	--typo-heading--font-weight: 600;
+	--typo-heading--font-style: normal;
+	--typo-heading--letter-spacing: inherit;
+	--typo-heading--font-stretch: inherit;
+	--typo-heading--font-kerning: inherit;
+	--typo-heading--text-shadow: inherit;
+	--typo-heading--word-spacing: inherit;
+	--typo-heading--hyphens: inherit;
+	--typo-heading--text-transform: inherit;
+	--typo-anchor--font-family: inherit;
+	--typo-anchor--font-size: inherit;
+	--typo-anchor--color-light: var(--color-primary-600);
+	--typo-anchor--color-dark: var(--color-primary-400);
+	--typo-anchor--line-height: inherit;
+	--typo-anchor--font-weight: inherit;
+	--typo-anchor--font-style: inherit;
+	--typo-anchor--letter-spacing: inherit;
+	--typo-anchor--font-stretch: inherit;
+	--typo-anchor--font-kerning: inherit;
+	--typo-anchor--text-shadow: inherit;
+	--typo-anchor--word-spacing: inherit;
+	--typo-anchor--hyphens: inherit;
+	--typo-anchor--text-transform: inherit;
+	--typo-anchor--text-decoration-line: none;
+	--typo-anchor--text-decoration-color: inherit;
+	--typo-anchor--text-decoration-style: inherit;
+	--typo-anchor--text-decoration-thickness: inherit;
+	--typo-anchor--text-underline-offset: inherit;
+	--typo-anchor--text-underline-position: inherit;
+	--typo-anchor--hover--text-decoration-line: underline;
+	--typo-anchor--hover--text-decoration-color: inherit;
+	--typo-anchor--hover--text-decoration-style: inherit;
+	--typo-anchor--hover--text-decoration-thickness: inherit;
+	--typo-anchor--hover--text-underline-offset: inherit;
+	--typo-anchor--hover--text-underline-position: inherit;
+	--typo-anchor--active--text-decoration-line: none;
+	--typo-anchor--active--text-decoration-color: inherit;
+	--typo-anchor--active--text-decoration-style: inherit;
+	--typo-anchor--active--text-decoration-thickness: inherit;
+	--typo-anchor--active--text-underline-offset: inherit;
+	--typo-anchor--active--text-underline-position: inherit;
+	--typo-anchor--focus--text-decoration-line: none;
+	--typo-anchor--focus--text-decoration-color: inherit;
+	--typo-anchor--focus--text-decoration-style: inherit;
+	--typo-anchor--focus--text-decoration-thickness: inherit;
+	--typo-anchor--focus--text-underline-offset: inherit;
+	--typo-anchor--focus--text-underline-position: inherit;
+
+	/* Radii: panels 8 px, rows/buttons 6 px. The `--radius-*` values are
+	   Tailwind v4's runtime theme variables; overriding them here keeps
+	   every existing `rounded-*` utility on the Matte Black tiers. */
+	--radius-base: 6px;
+	--radius-container: 8px;
+	--radius-sm: 4px;
+	--radius-lg: 6px;
+	--radius-xl: 8px;
+	--radius-2xl: 8px;
+
+	--default-border-width: 1px;
+	--default-outline-width: 2px;
+	--default-ring-width: 1px;
+	--corner-shape-base: round;
+	--corner-shape-container: round;
+
+	--color-root-bg-light: var(--color-surface-50);
+	--color-root-bg-dark: #121212;
+	--color-brand-light: var(--color-primary-600);
+	--color-brand-contrast-light: var(--color-primary-contrast-600);
+	--color-brand-dark: var(--color-primary-500);
+	--color-brand-contrast-dark: var(--color-primary-contrast-500);
+
+	/* Accent — exact palette values at 400/500/600. */
+	--color-primary-50: #fdf2df;
+	--color-primary-100: #fbe3bc;
+	--color-primary-200: #f8d194;
+	--color-primary-300: #f7be64;
+	--color-primary-400: #f5a326;
+	--color-primary-500: #e68e0d;
+	--color-primary-600: #c97b0b;
+	--color-primary-700: #a66409;
+	--color-primary-800: #7e4c07;
+	--color-primary-900: #573406;
+	--color-primary-950: #2f1c03;
+	--color-primary-contrast-dark: #121212;
+	--color-primary-contrast-light: #fff7ea;
+	--color-primary-contrast-50: var(--color-primary-contrast-dark);
+	--color-primary-contrast-100: var(--color-primary-contrast-dark);
+	--color-primary-contrast-200: var(--color-primary-contrast-dark);
+	--color-primary-contrast-300: var(--color-primary-contrast-dark);
+	--color-primary-contrast-400: var(--color-primary-contrast-dark);
+	--color-primary-contrast-500: var(--color-primary-contrast-dark);
+	--color-primary-contrast-600: var(--color-primary-contrast-dark);
+	--color-primary-contrast-700: var(--color-primary-contrast-light);
+	--color-primary-contrast-800: var(--color-primary-contrast-light);
+	--color-primary-contrast-900: var(--color-primary-contrast-light);
+	--color-primary-contrast-950: var(--color-primary-contrast-light);
+
+	/* Secondary — neutral graphite derived from text / border greys.
+	   No new hue: secondary surfaces stay monochrome. */
+	--color-secondary-50: #d4d4d4;
+	--color-secondary-100: #c9c9cb;
+	--color-secondary-200: #b7b7ba;
+	--color-secondary-300: #a6a6a9;
+	--color-secondary-400: #98989b;
+	--color-secondary-500: #8a8a8d;
+	--color-secondary-600: #747477;
+	--color-secondary-700: #5f5f62;
+	--color-secondary-800: #47474a;
+	--color-secondary-900: #303033;
+	--color-secondary-950: #1e1e20;
+	--color-secondary-contrast-dark: #121212;
+	--color-secondary-contrast-light: #f5f5f5;
+	--color-secondary-contrast-50: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-100: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-200: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-300: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-400: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-500: var(--color-secondary-contrast-dark);
+	--color-secondary-contrast-600: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-700: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-800: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-900: var(--color-secondary-contrast-light);
+	--color-secondary-contrast-950: var(--color-secondary-contrast-light);
+
+	/* Tertiary — deeper amber from the same accent hue. */
+	--color-tertiary-50: #fbe3bc;
+	--color-tertiary-100: #f8d194;
+	--color-tertiary-200: #f0b768;
+	--color-tertiary-300: #e09d45;
+	--color-tertiary-400: #cc862c;
+	--color-tertiary-500: #b87322;
+	--color-tertiary-600: #a0621c;
+	--color-tertiary-700: #855018;
+	--color-tertiary-800: #693e13;
+	--color-tertiary-900: #4d2d0e;
+	--color-tertiary-950: #2e1a07;
+	--color-tertiary-contrast-dark: #121212;
+	--color-tertiary-contrast-light: #fff7ea;
+	--color-tertiary-contrast-50: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-100: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-200: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-300: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-400: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-500: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-600: var(--color-tertiary-contrast-dark);
+	--color-tertiary-contrast-700: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-800: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-900: var(--color-tertiary-contrast-light);
+	--color-tertiary-contrast-950: var(--color-tertiary-contrast-light);
+
+	/* Success — muted sage, the only non-amber hue, kept for semantics. */
+	--color-success-50: #e7efdf;
+	--color-success-100: #d2e0c4;
+	--color-success-200: #bcd0a8;
+	--color-success-300: #a6c08c;
+	--color-success-400: #92b277;
+	--color-success-500: #7d9b6a;
+	--color-success-600: #6a8559;
+	--color-success-700: #566e47;
+	--color-success-800: #435737;
+	--color-success-900: #304028;
+	--color-success-950: #1e2a18;
+	--color-success-contrast-dark: #121212;
+	--color-success-contrast-light: #f5f5f0;
+	--color-success-contrast-50: var(--color-success-contrast-dark);
+	--color-success-contrast-100: var(--color-success-contrast-dark);
+	--color-success-contrast-200: var(--color-success-contrast-dark);
+	--color-success-contrast-300: var(--color-success-contrast-dark);
+	--color-success-contrast-400: var(--color-success-contrast-dark);
+	--color-success-contrast-500: var(--color-success-contrast-dark);
+	--color-success-contrast-600: var(--color-success-contrast-light);
+	--color-success-contrast-700: var(--color-success-contrast-light);
+	--color-success-contrast-800: var(--color-success-contrast-light);
+	--color-success-contrast-900: var(--color-success-contrast-light);
+	--color-success-contrast-950: var(--color-success-contrast-light);
+
+	/* Warning — the accent itself; amber already means "caution". */
+	--color-warning-50: #fdf2df;
+	--color-warning-100: #fbe3bc;
+	--color-warning-200: #f8d194;
+	--color-warning-300: #f7be64;
+	--color-warning-400: #f5a326;
+	--color-warning-500: #e68e0d;
+	--color-warning-600: #c97b0b;
+	--color-warning-700: #a66409;
+	--color-warning-800: #7e4c07;
+	--color-warning-900: #573406;
+	--color-warning-950: #2f1c03;
+	--color-warning-contrast-dark: #121212;
+	--color-warning-contrast-light: #fff7ea;
+	--color-warning-contrast-50: var(--color-warning-contrast-dark);
+	--color-warning-contrast-100: var(--color-warning-contrast-dark);
+	--color-warning-contrast-200: var(--color-warning-contrast-dark);
+	--color-warning-contrast-300: var(--color-warning-contrast-dark);
+	--color-warning-contrast-400: var(--color-warning-contrast-dark);
+	--color-warning-contrast-500: var(--color-warning-contrast-dark);
+	--color-warning-contrast-600: var(--color-warning-contrast-dark);
+	--color-warning-contrast-700: var(--color-warning-contrast-light);
+	--color-warning-contrast-800: var(--color-warning-contrast-light);
+	--color-warning-contrast-900: var(--color-warning-contrast-light);
+	--color-warning-contrast-950: var(--color-warning-contrast-light);
+
+	/* Error — muted terracotta, not a saturated alarm red. */
+	--color-error-50: #f6e3df;
+	--color-error-100: #eec7c0;
+	--color-error-200: #e3aaa1;
+	--color-error-300: #d78d82;
+	--color-error-400: #d0776a;
+	--color-error-500: #c96a5a;
+	--color-error-600: #b35a4b;
+	--color-error-700: #95493d;
+	--color-error-800: #76392f;
+	--color-error-900: #582a22;
+	--color-error-950: #351811;
+	--color-error-contrast-dark: #121212;
+	--color-error-contrast-light: #fdf4f2;
+	--color-error-contrast-50: var(--color-error-contrast-dark);
+	--color-error-contrast-100: var(--color-error-contrast-dark);
+	--color-error-contrast-200: var(--color-error-contrast-dark);
+	--color-error-contrast-300: var(--color-error-contrast-dark);
+	--color-error-contrast-400: var(--color-error-contrast-dark);
+	--color-error-contrast-500: var(--color-error-contrast-dark);
+	--color-error-contrast-600: var(--color-error-contrast-light);
+	--color-error-contrast-700: var(--color-error-contrast-light);
+	--color-error-contrast-800: var(--color-error-contrast-light);
+	--color-error-contrast-900: var(--color-error-contrast-light);
+	--color-error-contrast-950: var(--color-error-contrast-light);
+
+	/* Surface — the exact Matte Black ladder. */
+	--color-surface-50: #d4d4d4;
+	--color-surface-100: #c9c9cb;
+	--color-surface-200: #b7b7ba;
+	--color-surface-300: #a6a6a9;
+	--color-surface-400: #98989b;
+	--color-surface-500: #8a8a8d;
+	--color-surface-600: #2a2a2a;
+	--color-surface-700: #242424;
+	--color-surface-800: #1e1e1e;
+	--color-surface-900: #161616;
+	--color-surface-950: #0d0d0d;
+	--color-surface-contrast-dark: #121212;
+	--color-surface-contrast-light: #f5f5f5;
+	--color-surface-contrast-50: var(--color-surface-contrast-dark);
+	--color-surface-contrast-100: var(--color-surface-contrast-dark);
+	--color-surface-contrast-200: var(--color-surface-contrast-dark);
+	--color-surface-contrast-300: var(--color-surface-contrast-dark);
+	--color-surface-contrast-400: var(--color-surface-contrast-dark);
+	--color-surface-contrast-500: var(--color-surface-contrast-dark);
+	--color-surface-contrast-600: var(--color-surface-contrast-light);
+	--color-surface-contrast-700: var(--color-surface-contrast-light);
+	--color-surface-contrast-800: var(--color-surface-contrast-light);
+	--color-surface-contrast-900: var(--color-surface-contrast-light);
+	--color-surface-contrast-950: var(--color-surface-contrast-light);
+
+	/* Aliases used by the fork's docs and the Matte Black chrome rules. */
+	--matte-sunken: var(--color-surface-950);
+	--matte-bg: var(--color-root-bg-dark);
+	--matte-panel: var(--color-surface-900);
+	--matte-raised: var(--color-surface-800);
+	--matte-border: var(--color-surface-700);
+	--matte-selection: var(--color-surface-600);
+}

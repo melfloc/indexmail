@@ -28,6 +28,11 @@
 @import '@skeletonlabs/skeleton/themes/vox';
 @import '@skeletonlabs/skeleton/themes/wintry';
 
+/* Index Mail's bundled theme. Kept in its own file so the token
+   block stays a drop-in Skeleton theme (the same shape the theme
+   generator exports) instead of being inlined into app.css. */
+@import './lib/themes/matte-black.css';
+
 /* Tailwind v4's `dark:` variant defaults to `prefers-color-scheme`.
    We override it to look at `data-mode="dark"` on the `<html>` element
    so the JS layer (`lib/theme.ts`) can choose between following the
@@ -45,6 +50,13 @@ body {
 
 body {
   @apply bg-surface-50 text-surface-900 dark:bg-surface-900 dark:text-surface-50;
+}
+
+/* Matte Black picks a canvas (#121212) that sits between its sunken
+   chrome (#0d0d0d) and its panels (#161616). Stock themes keep the
+   upstream surface-900 canvas. */
+[data-theme='matte-black'][data-mode='dark'] body {
+  background-color: var(--color-root-bg-dark);
 }
 
 #app {
@@ -88,6 +100,19 @@ body {
 
 [data-mode='dark'] .glass-float {
   background: color-mix(in oklab, var(--color-surface-900) 80%, transparent);
+}
+
+/* Matte Black chrome. The palette separates the canvas (#121212)
+   from the sunken chrome (#0d0d0d) and the floating panels (#161616);
+   these two rules map those steps onto the shared glass utilities
+   without inventing a second surface system. */
+[data-theme='matte-black'][data-mode='dark'] .glass-panel {
+  background: color-mix(in oklab, var(--color-surface-950) 82%, transparent);
+}
+
+[data-theme='matte-black'][data-mode='dark'] .glass-float {
+  background: color-mix(in oklab, var(--color-surface-900) 92%, transparent);
+  border-color: var(--color-surface-700);
 }
 
 /* Opaque popover — the one canonical recipe for floating layers that
@@ -183,8 +208,16 @@ body {
 .input:focus,
 .select:focus {
   border-color: var(--color-primary-500);
-  outline: none;
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary-500) 25%, transparent);
+  box-shadow: none;
+}
+
+/* Keyboard focus is one accent outline across the whole app — buttons,
+   links, rows, inputs, menus. `outline-offset: -1px` keeps the ring
+   inside the element so dense rows don't clip against their neighbours;
+   70% accent leaves the underlying surface visible through the ring. */
+:where(button, a[href], input, select, textarea, summary, [role='button'], [tabindex]):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-primary-500) 70%, transparent);
+  outline-offset: -1px;
 }
 
 /* Opaque reading/writing canvas one step above the chrome — no blur,

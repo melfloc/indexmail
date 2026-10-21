@@ -43,6 +43,10 @@ export interface ThemeOption {
       tag and Remove button in the picker.  Stock themes leave this
       undefined. */
   custom?: boolean
+  /** True for bundled themes that only define a dark palette. The
+      picker pins the mode to Dark and `applyTheme` never writes
+      `data-mode="light"`, so "Follow OS" can't wash the colours. */
+  darkOnly?: boolean
 }
 
 /**
@@ -52,6 +56,12 @@ export interface ThemeOption {
  *   2. Add an entry here.
  */
 export const STOCK_THEMES: ThemeOption[] = [
+  {
+    id: 'matte-black',
+    label: 'Matte Black',
+    description: 'Omarchy matte neutrals with an amber accent',
+    darkOnly: true,
+  },
   { id: 'cerberus', label: 'Cerberus', description: 'Bold default with warm accents' },
   { id: 'modern', label: 'Modern', description: 'Clean, neutral, business-like' },
   { id: 'pine', label: 'Pine', description: 'Calm forest greens' },
@@ -106,7 +116,15 @@ export const THEMES = new Proxy([] as ThemeOption[], {
 
 /** Fallback if a saved `theme_name` no longer exists in the live
     list (e.g. a removed custom theme, or a build downgrade). */
-export const DEFAULT_THEME_ID = 'cerberus'
+export const DEFAULT_THEME_ID = 'matte-black'
+
+/** Whether a theme is dark-only (and therefore must ignore Light /
+    Follow OS). Unknown ids fall back to the default theme's rule. */
+export function isDarkOnlyTheme(id: string): boolean {
+  const live = listThemes()
+  const theme = live.find((t) => t.id === id) ?? live.find((t) => t.id === DEFAULT_THEME_ID)
+  return !!theme?.darkOnly
+}
 
 const DARK_MEDIA = '(prefers-color-scheme: dark)'
 
@@ -153,12 +171,16 @@ function ensureCustomThemeLoaded(themeId: string): void {
  */
 export function applyTheme(name: string, mode: ThemeMode): void {
   const live = listThemes()
-  const themeId = live.some((t) => t.id === name) ? name : DEFAULT_THEME_ID
+  const theme = live.find((t) => t.id === name)
+    ?? live.find((t) => t.id === DEFAULT_THEME_ID)
+  const themeId = theme?.id ?? DEFAULT_THEME_ID
   ensureCustomThemeLoaded(themeId)
   document.documentElement.dataset.theme = themeId
 
   const concreteMode: 'light' | 'dark' =
-    mode === 'system' ? (prefersDark() ? 'dark' : 'light') : mode
+    theme?.darkOnly
+      ? 'dark'
+      : mode === 'system' ? (prefersDark() ? 'dark' : 'light') : mode
   document.documentElement.dataset.mode = concreteMode
 }
 
@@ -175,7 +197,9 @@ export function installSystemModeListener(
   mode: ThemeMode,
   themeName: string,
 ): () => void {
-  if (mode !== 'system' || !window.matchMedia) return () => {}
+  if (mode !== 'system' || isDarkOnlyTheme(themeName) || !window.matchMedia) {
+    return () => {}
+  }
 
   const mql = window.matchMedia(DARK_MEDIA)
   const handler = () => applyTheme(themeName, 'system')

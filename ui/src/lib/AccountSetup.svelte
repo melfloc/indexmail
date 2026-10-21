@@ -715,7 +715,7 @@
             <div
               class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-colors {i ===
               step
-                ? 'bg-primary-500 text-white'
+                ? 'bg-primary-500 text-primary-contrast-500'
                 : i < step
                   ? 'bg-primary-500/20 text-primary-700 dark:text-primary-300'
                   : 'bg-surface-200 dark:bg-surface-700 text-surface-500'}"

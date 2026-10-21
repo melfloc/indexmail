@@ -869,7 +869,7 @@
         {invite.summary || '(untitled meeting)'}
       </span>
       {#if isCancel}
-        <span class="text-[10px] uppercase tracking-wide font-semibold px-1.5 py-px rounded-sm bg-error-500 text-white">
+        <span class="text-[10px] uppercase tracking-wide font-semibold px-1.5 py-px rounded-sm bg-error-500 text-error-contrast-500">
           Cancelled
         </span>
       {/if}
@@ -1256,7 +1256,7 @@
                            with the time pill on tall blocks and
                            still surfaces on short ones. -->
                       <span
-                        class="absolute bottom-0 right-0 text-[8px] uppercase tracking-wider font-bold px-1 py-px rounded-tl bg-primary-500 text-white leading-none"
+                        class="absolute bottom-0 right-0 text-[8px] uppercase tracking-wider font-bold px-1 py-px rounded-tl bg-primary-500 text-primary-contrast-500 leading-none"
                         title="Matches this invite"
                       >invite</span>
                     </div>

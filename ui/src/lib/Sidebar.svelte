@@ -954,7 +954,7 @@
         tabindex="0"
         class="group w-full flex items-center gap-2 pr-3 py-2 rounded-lg text-sm cursor-pointer transition-colors duration-150 ease-out
           {selectedFolder === folder.name
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : dragOverFolder === folder.name
               ? 'bg-primary-500/20 ring-2 ring-primary-500'
               : 'hover:bg-primary-500/10'}"
@@ -1044,9 +1044,9 @@
            through sentinel folder names that MailList recognises and
            dispatches to the per-account-resolving backend commands. -->
       <button
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+        class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
           {selectedFolder === 'INBOX'
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : 'hover:bg-primary-500/10'}"
         onclick={() => onselectfolder('INBOX')}
       >
@@ -1072,9 +1072,9 @@
              OutboxList with `unified={true}`, which already calls
              `list_all_outbox` to merge every account's queue. -->
         <button
-          class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+          class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
             {selectedFolder === OUTBOX_FOLDER
-              ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+              ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
               : 'hover:bg-primary-500/10'}"
           onclick={() => onselectfolder(OUTBOX_FOLDER)}
         >
@@ -1094,9 +1094,9 @@
            user toggling between unified and a single account never
            sees their outgoing-mail folders shuffle. -->
       <button
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+        class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
           {selectedFolder === UNIFIED_DRAFTS_FOLDER
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : 'hover:bg-primary-500/10'}"
         onclick={() => onselectfolder(UNIFIED_DRAFTS_FOLDER)}
       >
@@ -1109,9 +1109,9 @@
         <span class="flex-1 text-left truncate">{m.sidebar_unified_drafts_label()}</span>
       </button>
       <button
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+        class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
           {selectedFolder === UNIFIED_SENT_FOLDER
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : 'hover:bg-primary-500/10'}"
         onclick={() => onselectfolder(UNIFIED_SENT_FOLDER)}
       >
@@ -1124,9 +1124,9 @@
         <span class="flex-1 text-left truncate">{m.sidebar_unified_sent_label()}</span>
       </button>
       <button
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+        class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
           {selectedFolder === UNIFIED_ARCHIVE_FOLDER
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : 'hover:bg-primary-500/10'}"
         onclick={() => onselectfolder(UNIFIED_ARCHIVE_FOLDER)}
       >
@@ -1139,9 +1139,9 @@
         <span class="flex-1 text-left truncate">{m.sidebar_unified_archive_label()}</span>
       </button>
       <button
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+        class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
           {selectedFolder === UNIFIED_JUNK_FOLDER
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : 'hover:bg-primary-500/10'}"
         onclick={() => onselectfolder(UNIFIED_JUNK_FOLDER)}
       >
@@ -1154,9 +1154,9 @@
         <span class="flex-1 text-left truncate">{m.sidebar_unified_junk_label()}</span>
       </button>
       <button
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors duration-150 ease-out
+        class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 ease-out
           {selectedFolder === UNIFIED_TRASH_FOLDER
-            ? 'bg-primary-500/12 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
+            ? 'bg-primary-500/15 text-primary-500 font-medium ring-1 ring-inset ring-primary-500/30'
             : 'hover:bg-primary-500/10'}"
         onclick={() => onselectfolder(UNIFIED_TRASH_FOLDER)}
       >

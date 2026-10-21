@@ -189,7 +189,7 @@
               aria-selected={!isUnset && h === selectedH}
               data-slot={h}
               class="px-3 py-1 text-sm text-center cursor-pointer rounded-sm {!isUnset && h === selectedH
-                ? 'bg-primary-500 text-white'
+                ? 'bg-primary-500 text-primary-contrast-500'
                 : 'hover:bg-surface-200 dark:hover:bg-surface-800'}"
               onmousedown={(e) => {
                 e.preventDefault()
@@ -217,7 +217,7 @@
               aria-selected={!isUnset && m === selectedM}
               data-slot={m}
               class="px-3 py-1 text-sm text-center cursor-pointer rounded-sm {!isUnset && m === selectedM
-                ? 'bg-primary-500 text-white'
+                ? 'bg-primary-500 text-primary-contrast-500'
                 : 'hover:bg-surface-200 dark:hover:bg-surface-800'}"
               onmousedown={(e) => {
                 e.preventDefault()

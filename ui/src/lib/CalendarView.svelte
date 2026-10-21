@@ -1811,7 +1811,7 @@
                            event editor. -->
                       <button
                         type="button"
-                        class="absolute bottom-1 right-1 w-6 h-6 rounded-lg flex items-center justify-center bg-primary-500 text-white shadow hover:bg-primary-600 z-10"
+                        class="absolute bottom-1 right-1 w-6 h-6 rounded-lg flex items-center justify-center bg-primary-500 text-primary-contrast-500 shadow hover:bg-primary-600 z-10"
                         title={`Join meeting (${meetingUrl})`}
                         aria-label="Join meeting"
                         onmousedown={(ev) => ev.stopPropagation()}
