@@ -3057,19 +3057,19 @@
      `.rt-btn` styling the editor's panels use so each Compose tab
      reads as visually indistinguishable from a built-in. -->
 {#snippet attachTabContent()}
-  <label class="rt-btn cursor-pointer" title="Attach a file from your computer">
+  <label class="rt-btn cursor-pointer" title={m.compose_attach_local_title()}>
     <span class="rt-btn-icon"><Icon name="attachment" size={20} /></span>
-    <span class="rt-btn-label">Attach</span>
+    <span class="rt-btn-label">{m.compose_attach_local_label()}</span>
     <input type="file" multiple class="hidden" onchange={onPickFiles} />
   </label>
   <button
     type="button"
     class="rt-btn"
-    title="Attach a file or link from Nextcloud"
+    title={m.compose_attach_nc_title()}
     onclick={() => (showNcPicker = true)}
   >
     <span class="rt-btn-icon"><Icon name="cloud" size={20} /></span>
-    <span class="rt-btn-label">NC Files</span>
+    <span class="rt-btn-label">{m.compose_attach_nc_label()}</span>
   </button>
   <!-- #572 — Nextcloud Forms: mint a form + public link, drop the
        invite card into the body, and open the Forms editor in an
@@ -3172,11 +3172,11 @@
     type="button"
     class="ctb"
     disabled={sending}
-    title="Save the current draft to the Drafts folder"
+    title={m.compose_action_save_title()}
     onclick={saveDraft}
   >
     <span class="ctb-icon"><Icon name="save-draft" size={20} /></span>
-    <span class="ctb-label">Save</span>
+    <span class="ctb-label">{m.compose_action_save()}</span>
   </button>
   <!-- #57 — the Encrypted indicator pill lives next to the
        "New Message" title in the header (see Compose's modal
@@ -3191,7 +3191,7 @@
       : m.compose_send_tooltip()}
     onclick={send}
   >
-    <span>{sending ? 'Sending…' : 'Send'}</span>
+    <span>{sending ? m.compose_action_sending() : m.compose_action_send()}</span>
     <Icon name="sent" size={18} />
   </button>
 {/snippet}
@@ -3216,7 +3216,7 @@
         <button
           type="button"
           class="px-2.5 py-1 transition-colors {cryptoStack === 'pgp'
-            ? 'bg-primary-500 text-white'
+            ? 'bg-primary-500 text-primary-contrast-500'
             : 'text-surface-600 dark:text-surface-300 hover:bg-primary-500/10'}"
           aria-pressed={cryptoStack === 'pgp'}
           onclick={() => {
@@ -3231,7 +3231,7 @@
         <button
           type="button"
           class="px-2.5 py-1 transition-colors {cryptoStack === 'smime'
-            ? 'bg-primary-500 text-white'
+            ? 'bg-primary-500 text-primary-contrast-500'
             : 'text-surface-600 dark:text-surface-300 hover:bg-primary-500/10'}"
           aria-pressed={cryptoStack === 'smime'}
           onclick={() => {
