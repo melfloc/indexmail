@@ -2455,10 +2455,10 @@
 <main class="flex-1 flex flex-col overflow-hidden">
   {#if uid == null}
     <div class="flex-1 flex items-center justify-center text-surface-500">
-      Select a message to read.
+      {m.mail_view_select_message()}
     </div>
   {:else if loading}
-    <div class="flex-1 flex items-center justify-center text-surface-500">Loading message…</div>
+    <div class="flex-1 flex items-center justify-center text-surface-500">{m.mail_view_loading_message()}</div>
   {:else if error}
     <div class="p-6 text-sm text-error-500">{error}</div>
   {:else if email}

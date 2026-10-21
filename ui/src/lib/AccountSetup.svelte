@@ -676,7 +676,7 @@
     <div class="w-full max-w-xl mx-4">
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-primary-500 mb-2">{m.account_setup_welcome_title()}</h1>
+      <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-50 mb-2">{m.account_setup_welcome_title()}</h1>
       <p class="text-surface-600 dark:text-surface-400">{m.account_setup_welcome_subtitle()}</p>
     </div>
 

@@ -23,6 +23,7 @@
   import Badge from './Badge.svelte'
   import { unifiedSpecialKind, displayFolderName } from './unifiedFolders'
   import { m } from '../paraglide/messages'
+  import { getLocale } from '../paraglide/runtime'
 
   // ── Props ───────────────────────────────────────────────────
   interface EmailEnvelope {
@@ -1571,10 +1572,14 @@
     const d = new Date(iso)
     const now = new Date()
     const sameDay = d.toDateString() === now.toDateString()
+    // Follow the UI locale for the compact list date; without an
+    // explicit locale the webview falls back to the OS locale even
+    // when the user picked Spanish inside the app.
+    const locale = getLocale()
     if (sameDay) {
-      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
     }
-    return d.toLocaleDateString([], { month: 'short', day: 'numeric' })
+    return d.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
   }
 
   // ── Right-click context menu ──────────────────────────────────
@@ -1977,7 +1982,7 @@
                   : env.is_starred
                     ? 'bg-amber-500/10 hover:bg-amber-500/15'
                     : !env.is_read
-                      ? 'bg-primary-500/4 dark:bg-primary-500/7 hover:bg-primary-500/10'
+                      ? 'bg-surface-900/50 hover:bg-primary-500/10'
                       : 'hover:bg-primary-500/10'}"
             draggable="true"
             ondragstart={(e) => onMailDragStart(e, env)}
@@ -2027,8 +2032,8 @@
               />
               <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between mb-1 gap-2">
-                  <span class="text-[0.9em] {!env.is_read ? 'font-semibold' : 'font-medium text-surface-400'} truncate pr-2">
-                    {env.from || '(unknown sender)'}
+                  <span class="text-[0.9em] {!env.is_read ? 'font-semibold' : 'font-medium text-surface-400'} truncate pr-2" title={env.from}>
+                    {parsedFrom.name || parsedFrom.email || '(unknown sender)'}
                   </span>
                   <!-- Date + crypto pill stacked vertically on the right
                        so the chip can sit *under* the date without
@@ -2265,11 +2270,11 @@
       {#if loadingOlder}
         <div class="px-4 py-3 text-center text-xs text-surface-500 inline-flex items-center justify-center gap-2 w-full">
           <Icon name="loading" size={14} />
-          Loading older messages…
+          {m.maillist_loading_older()}
         </div>
       {:else if olderExhausted && envelopes.length > 0}
         <div class="px-4 py-3 text-center text-[11px] text-surface-400 uppercase tracking-wider">
-          End of folder
+          {m.maillist_end_of_folder()}
         </div>
       {/if}
     {/if}

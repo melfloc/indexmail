@@ -792,9 +792,19 @@
   }
 
   // Short display name: strip the hierarchy prefix so "INBOX/Work" shows
-  // as "Work". INBOX itself keeps its name but title-cased.
+  // as "Work". Standard mailboxes use the localised folder names rather
+  // than whatever the server happens to call them ("Sent Mail", "Trash",
+  // "Papierkorb", …); user folders keep their server name.
   function displayName(f: Folder): string {
-    if (f.name.toUpperCase() === 'INBOX') return 'Inbox'
+    if (f.name === OUTBOX_FOLDER) return m.folder_name_outbox()
+    const rank = standardRank(f)
+    if (rank === 0) return m.folder_name_inbox()
+    if (rank === 1) return m.folder_name_drafts()
+    if (rank === 2) return m.folder_name_sent()
+    if (rank === 4) return m.folder_name_archive()
+    if (rank === 5) return m.folder_name_junk()
+    if (rank === 6) return m.folder_name_trash()
+    if (f.name.toUpperCase() === 'INBOX') return m.folder_name_inbox()
     const delim = f.delimiter ?? '/'
     const parts = f.name.split(delim)
     return parts[parts.length - 1] || f.name
@@ -1011,7 +1021,7 @@
   {#if !unified}
     <div class="flex items-center justify-between px-3 pt-2 pb-1">
       <span class="text-[10px] font-semibold text-surface-500 uppercase tracking-wider">
-        Folders
+        {m.sidebar_folders_label()}
       </span>
       <button
         class="w-5 h-5 rounded-lg flex items-center justify-center text-surface-500 hover:bg-primary-500/10 transition-colors duration-150 ease-out disabled:opacity-50"
