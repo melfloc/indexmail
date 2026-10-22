@@ -3560,11 +3560,11 @@
     border: none;
     cursor: pointer;
     color: white;
-    background: var(--color-primary-500, #3b82f6);
+    background: var(--color-primary-500, #e68e0d);
     transition: background-color 100ms ease;
   }
   :global(.ctb-send:hover:not(:disabled)) {
-    background: var(--color-primary-600, #2563eb);
+    background: var(--color-primary-600, #c97b0b);
   }
   :global(.ctb-send:disabled) {
     opacity: 0.5;

@@ -557,7 +557,7 @@
                       </span>
                     {/if}
                     {#if acct.capabilities.talk}
-                      <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-300">Talk</span>
+                      <Badge label="Talk" tone="primary" />
                     {/if}
                     <!-- Capability chips are informational, not
                          categorical — one quiet tone, no rainbow
