@@ -115,6 +115,26 @@ body {
   border-color: var(--color-surface-700);
 }
 
+/* Inputs inside floating surfaces get an opaque fill. The default
+   glass fill is intentionally translucent, but a modal over a reader
+   lets the message behind it show through the field — visible as
+   ghost text in the composer's Subject input. Solid surface-800 keeps
+   the field readable without changing inputs elsewhere. */
+[data-theme='matte-black'][data-mode='dark'] .glass-float .input,
+[data-theme='matte-black'][data-mode='dark'] .glass-float .select,
+[data-theme='matte-black'][data-mode='dark'] .popover-opaque .input,
+[data-theme='matte-black'][data-mode='dark'] .popover-opaque .select {
+  background-color: var(--color-surface-800);
+  border-color: var(--color-surface-700);
+}
+
+[data-theme='matte-black'][data-mode='dark'] .glass-float .input:focus,
+[data-theme='matte-black'][data-mode='dark'] .glass-float .select:focus,
+[data-theme='matte-black'][data-mode='dark'] .popover-opaque .input:focus,
+[data-theme='matte-black'][data-mode='dark'] .popover-opaque .select:focus {
+  border-color: var(--color-primary-500);
+}
+
 /* Opaque popover — the one canonical recipe for floating layers that
    render INSIDE a glass surface (Compose / EventEditor modals, the
    editor canvas), where stacking a second backdrop-filter is banned
@@ -209,6 +229,16 @@ body {
 .select:focus {
   border-color: var(--color-primary-500);
   box-shadow: none;
+}
+
+/* Native form controls (range sliders, checkboxes, radios, progress)
+   otherwise inherit the browser's blue accent. Route them through the
+   active theme's primary so no stock blue survives a theme change. */
+input[type='range'],
+input[type='checkbox'],
+input[type='radio'],
+progress {
+  accent-color: var(--color-primary-500);
 }
 
 /* Keyboard focus is one accent outline across the whole app — buttons,

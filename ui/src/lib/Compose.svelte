@@ -585,13 +585,13 @@
   let composeExtraTabs = $derived<ExtraTab[]>([
     {
       id: 'attach',
-      label: 'Attach',
+      label: m.compose_tab_attach(),
       iconName: 'attachment',
       content: attachTabContent,
     },
     {
       id: 'meetings',
-      label: 'Meetings',
+      label: m.compose_tab_meetings(),
       iconName: 'meetings',
       content: meetingsTabContent,
     },
@@ -601,7 +601,7 @@
     // crowding the Send actions row.
     {
       id: 'encryption',
-      label: 'Encryption',
+      label: m.compose_tab_encryption(),
       iconName: 'encrypted',
       content: encryptionTabContent,
     },
@@ -2805,7 +2805,7 @@
 {#snippet composeBody()}
     <header class="px-5 py-3 border-b border-surface-200 dark:border-surface-700 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2 min-w-0">
-        <h2 class="text-base font-semibold whitespace-nowrap">New message</h2>
+        <h2 class="text-base font-semibold whitespace-nowrap">{m.compose_title_new_message()}</h2>
         <!-- #57 / #341 / #338 — crypto-mode indicator promoted out of
              the ribbon so the user sees the state from anywhere in the
              window, not just from the send-actions row.  Encrypt

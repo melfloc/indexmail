@@ -10,7 +10,7 @@ translated so the boundary does not drift silently.
 | Piece | File |
 |---|---|
 | Locale list | `ui/project.inlang/settings.json` (`"locales": ["en", "de", "es"]`) |
-| Catalogue | `ui/messages/es.json` (1080 keys, 104 translated) |
+| Catalogue | `ui/messages/es.json` (1121 keys, 156 translated) |
 | Language picker | `LOCALE_LABELS` in `ui/src/lib/AccountSettings.svelte` (`es: 'Español'`) |
 | Compiler | Paraglide JS, existing Vite plugin — no new dependency |
 
@@ -18,9 +18,17 @@ translated so the boundary does not drift silently.
 keys fall back to English at runtime; keeping a full copy avoids compile-time
 missing-key warnings and makes the translated boundary explicit in one diff.
 
-The app reads the active locale once at process start (localStorage pin →
-`navigator.language` → `en`). Switching language in Settings shows the existing
-"Restart required" prompt; a restart is required for the new catalogue.
+The app reads the active locale once at process start. The strategy is
+`localStorage → preferredLanguage → baseLocale`: the Settings picker writes
+`PARAGLIDE_LOCALE`, so the choice survives a restart, and an OS-language match
+is the fallback when no pin exists. `vite.config.ts` already declared that
+strategy; the `paraglide:compile` npm script now passes the same `--strategy`
+flags so `npm run check` can't overwrite the generated runtime with the CLI's
+default (cookie/globalVariable/baseLocale) and silently lose the pin.
+
+`folder_name_inbox` is translated as **Recibidos** rather than the longer
+"Bandeja de entrada" so the label fits the compact sidebar without truncating —
+the same convention mainstream Spanish clients use.
 
 ## Translated groups
 
@@ -32,12 +40,15 @@ The app reads the active locale once at process start (localStorage pin →
 2. **Settings**
    - Category names: General, Profiles, Design, E-Mail, Calendar, Nextcloud,
      Security, Backup & Sync, AI, Updates.
-   - Design panel: Import theme, dark-only hint.
+   - Design panel: Appearance, Mode, Follow OS/Light/Dark, UI scale, Theme,
+     HTML-mail background, import/remove theme labels and the dark-only hint.
    - Account setup: steps, Back/Next/Finish/Skip/Add account/Saving, IMAP and
      SMTP labels/explainers, TLS-trust buttons and certificate explanation.
 3. **Composer**
-   - Primary actions: Send, Sending…, Save, Attach, NC Files.
-   - Attachment-mention warning and its dismiss action.
+   - Primary actions: Send, Sending…, Save, Attach, NC Files, Meetings/Citas.
+   - Header, attachment-mention warning and its dismiss action.
+   - Formatting ribbon: Format/Insert/Layout, Default, Bold, Italic, Underline,
+     Strike, Color, Highlight, Clear.
    - Crypto toggles (Encrypt/Sign and active states), read/delivery receipts.
    - Form-creation dialog labels.
 4. **Reader and list actions**
@@ -57,6 +68,10 @@ Everything else stays as upstream English, including (non-exhaustive):
 - Calendar, Contacts, Files, Talk, Notes, Tasks, Shares and Forms views.
 - Most of the Security, Encryption, S/MIME, Nextcloud and AI settings panels.
 - Search syntax help, onboarding tour, update flow, profile management.
+- Theme names and descriptions in the picker (product data; Matte Black stays
+  Matte Black).
+- Folder context-menu verbs (Rename/Delete) and folder-management dialogs; the
+  folder list itself is localized.
 - Backend error text that does not match one of the six connection patterns.
 - Email content (never translated).
 

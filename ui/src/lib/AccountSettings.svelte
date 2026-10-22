@@ -1888,12 +1888,12 @@
          result before navigating away from settings. -->
     <div class="card p-4 bg-surface-100 dark:bg-surface-800 rounded-2xl mb-6">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="text-base font-semibold">Appearance</h2>
+        <h2 class="text-base font-semibold">{m.settings_design_appearance_title()}</h2>
       </div>
 
       <div class="space-y-4 text-sm">
         <div>
-          <p class="font-medium mb-2">Mode</p>
+          <p class="font-medium mb-2">{m.settings_design_mode_label()}</p>
           <div class="flex gap-2">
             {#each ['system', 'light', 'dark'] as const as mode}
               <button
@@ -1904,7 +1904,11 @@
                 disabled={mode !== 'dark' && isDarkOnlyTheme(appSettings.theme_name)}
                 onclick={() => onThemeChange(appSettings.theme_name, mode)}
               >
-                {mode === 'system' ? 'Follow OS' : mode === 'light' ? 'Light' : 'Dark'}
+                {mode === 'system'
+                  ? m.settings_design_mode_system()
+                  : mode === 'light'
+                    ? m.settings_design_mode_light()
+                    : m.settings_design_mode_dark()}
               </button>
             {/each}
           </div>
@@ -1914,7 +1918,7 @@
             </p>
           {:else}
             <p class="text-xs text-surface-400 mt-1">
-              "Follow OS" tracks your system light/dark preference live.
+              {m.settings_design_mode_follow_hint()}
             </p>
           {/if}
         </div>
@@ -1927,15 +1931,14 @@
              back to the auto-derived value.  Ctrl+wheel is also
              wired in App.svelte and updates the same setting. -->
         <div>
-          <p class="font-medium mb-1">UI scale</p>
+          <p class="font-medium mb-1">{m.settings_design_ui_scale_title()}</p>
           <p class="text-xs text-surface-400 mb-2">
-            Resize text, icons, and the rest of the UI uniformly.
-            Tip: Ctrl + scroll over the app also adjusts this.
+            {m.settings_design_ui_scale_hint()}
           </p>
           <label class="flex items-center gap-3 mb-3">
             <Toggle
               bind:checked={appSettings.ui_scale_auto as boolean}
-              label="Auto-scale based on screen size"
+              label={m.settings_design_ui_scale_auto_label()}
               onchange={() => {
                 applyUiScale(
                   effectiveScale(
@@ -1947,14 +1950,14 @@
               }}
             />
             <span class="text-sm">
-              Auto-scale
+              {m.settings_design_ui_scale_auto_label()}
               <span class="block text-xs text-surface-500">
-                Pick a scale automatically based on the current screen.
+                {m.settings_design_ui_scale_auto_hint()}
               </span>
             </span>
           </label>
           <label class="flex items-center gap-3 text-sm">
-            <span class="shrink-0 w-16">Manual</span>
+            <span class="shrink-0 w-16">{m.settings_design_ui_scale_manual()}</span>
             <input
               type="range"
               class="flex-1"
@@ -1982,7 +1985,7 @@
 
         <div>
           <div class="flex items-center justify-between mb-2">
-            <p class="font-medium">Theme</p>
+            <p class="font-medium">{m.settings_design_theme_title()}</p>
             <button
               type="button"
               class="btn btn-sm preset-outlined-surface-500 inline-flex items-center justify-center"
@@ -2007,7 +2010,7 @@
                     <span>{theme.label}</span>
                     {#if theme.custom}
                       <span class="text-[10px] uppercase tracking-wider font-semibold px-1 py-px rounded-sm bg-primary-500/20 text-primary-600 dark:text-primary-300">
-                        custom
+                        {m.settings_design_custom_tag()}
                       </span>
                     {/if}
                   </div>
@@ -2017,8 +2020,8 @@
                   <button
                     type="button"
                     class="absolute top-1 right-1 w-6 h-6 rounded-sm text-xs text-surface-500 hover:bg-error-500/20 hover:text-error-500"
-                    title="Remove custom theme"
-                    aria-label={`Remove ${theme.label}`}
+                    title={m.settings_design_remove_theme_title()}
+                    aria-label={m.settings_design_remove_theme_aria({ label: theme.label })}
                     onclick={(e) => {
                       e.stopPropagation()
                       void removeCustomTheme(theme.id)
@@ -2029,13 +2032,12 @@
             {/each}
           </div>
           <p class="text-xs text-surface-400 mt-2">
-            Imported themes aren't validated — a poorly-tuned palette can hurt readability.
-            Skeleton's theme generator at <span class="font-mono">skeleton.dev</span> exports compatible files.
+            {m.settings_design_theme_hint()}
           </p>
         </div>
 
         <div>
-          <p class="font-medium mb-2">HTML mail background</p>
+          <p class="font-medium mb-2">{m.settings_design_html_bg_title()}</p>
           <div class="flex flex-wrap gap-2">
             <button
               type="button"
@@ -2046,7 +2048,7 @@
                 appSettings.mail_html_white_background = true
                 scheduleSave()
               }}
-            >Always white</button>
+            >{m.settings_design_html_bg_white()}</button>
             <button
               type="button"
               class="btn btn-sm {!appSettings.mail_html_white_background
@@ -2056,14 +2058,10 @@
                 appSettings.mail_html_white_background = false
                 scheduleSave()
               }}
-            >Use mail's theme</button>
+            >{m.settings_design_html_bg_mail_theme()}</button>
           </div>
           <p class="text-xs text-surface-400 mt-1">
-            HTML emails usually assume a white background — "Always white" keeps
-            them readable in dark mode. "Use mail's theme" lets the email render
-            against the app's background, which respects dark-mode-aware emails
-            but can wash out the rest. Each open mail also has its own toggle
-            to override this default.
+            {m.settings_design_html_bg_hint()}
           </p>
         </div>
 

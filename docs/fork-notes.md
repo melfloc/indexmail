@@ -54,11 +54,18 @@ cd ui && npm run check
   theme tokens, not by component-specific colours.
 - **Phase 2 — fork and first-class theme:** fork created, theme registered in
   `ui/`, default applied, compact/radius/type/focus changes landed, tests green.
+- **Phase 2b — polish pass:** composer input opacity, neutral wizard heading,
+  display-name sender rows, neutral unread tint, amber native controls, and a
+  fully localized Design panel / composer ribbon. The Paraglide strategy is now
+  also passed to the CLI compile, so the Spanish pin survives `npm run check`
+  and a restart. All three verification commands are green (logs in
+  `docs/verification/`).
 - **Phase 3 — real mail and Spanish:** Spanish infrastructure and the requested
-  translated groups are in place. Real Gmail verification is **blocked on the
-  app password** (see `docs/gmail-setup.md`); the app will be configured on the
-  workstation. Screenshots of the real inbox/reader/composer are pending the
-  same first launch; the capture script is ready.
+  translated groups are in place (156 keys). Real Gmail verification is
+  **blocked on the app password** (see `docs/gmail-setup.md`); the app will be
+  configured on the workstation. The synthetic WIP captures are in
+  `docs/screenshots/`; final real-mail captures and the last composer/wizard
+  recapture are pending the first local launch. The capture script is ready.
 
 ## Pending debt
 

@@ -1,5 +1,4 @@
     Checking unkai-core v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-core)
-   Compiling unkai-app v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/src-tauri)
     Checking unkai-imap v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-imap)
     Checking unkai-nextcloud v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-nextcloud)
     Checking unkai-carddav v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-carddav)
@@ -11,4 +10,5 @@
     Checking unkai-crypto v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-crypto)
     Checking unkai-mcp v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-mcp)
     Checking unkai-commands v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-commands)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 16.84s
+    Checking unkai-app v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.88s

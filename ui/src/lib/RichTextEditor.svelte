@@ -21,6 +21,7 @@
    */
 
   import { anchorRect, layoutViewport, visualDeltaToLayout, visualToLayoutRatio } from './coords'
+  import { m } from '../paraglide/messages'
   import { onDestroy } from 'svelte'
   import { createEditor, EditorContent } from 'svelte-tiptap'
   import { Node as TiptapNode, mergeAttributes } from '@tiptap/core'
@@ -1186,7 +1187,7 @@
   // means the recipient's client renders something reasonable
   // even when their OS doesn't have the exact face installed.
   const CURATED_FONTS: Array<{ label: string; css: string }> = [
-    { label: 'Default', css: '' },
+    { label: m.editor_style_default(), css: '' },
     {
       label: 'Sans-serif',
       css: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -1294,7 +1295,7 @@
   function currentFontLabel(): string {
     if (!$editor) return 'Font'
     const css = ($editor.getAttributes('textStyle')?.fontFamily as string | undefined) ?? ''
-    if (!css) return 'Default'
+    if (!css) return m.editor_style_default()
     const curated = CURATED_FONTS.find((f) => f.css === css)
     if (curated) return curated.label
     const sys = systemFonts.find((f) => familyToCss(f) === css)
@@ -1907,7 +1908,7 @@
           class="rt-tab"
           class:rt-tab-active={activeTab === 'format'}
           onclick={() => (activeTab = 'format')}
-        >Format</button>
+        >{m.editor_tab_format()}</button>
         <button
           type="button"
           role="tab"
@@ -1915,7 +1916,7 @@
           class="rt-tab"
           class:rt-tab-active={activeTab === 'insert'}
           onclick={() => (activeTab = 'insert')}
-        >Insert</button>
+        >{m.editor_tab_insert()}</button>
         <button
           type="button"
           role="tab"
@@ -1923,7 +1924,7 @@
           class="rt-tab"
           class:rt-tab-active={activeTab === 'layout'}
           onclick={() => (activeTab = 'layout')}
-        >Layout</button>
+        >{m.editor_tab_layout()}</button>
         {#each extraTabs as t (t.id)}
           <button
             type="button"
@@ -2038,34 +2039,34 @@
         <span class="rt-divider"></span>
 
         <!-- Text style -->
-        <button class="rt-btn {active('bold')}" title="Bold (Ctrl+B)" onclick={() => $editor?.chain().focus().toggleBold().run()}>
+        <button class="rt-btn {active('bold')}" title={`${m.editor_bold()} (Ctrl+B)`} onclick={() => $editor?.chain().focus().toggleBold().run()}>
           <span class="rt-btn-icon"><strong>B</strong></span>
-          <span class="rt-btn-label">Bold</span>
+          <span class="rt-btn-label">{m.editor_bold()}</span>
         </button>
-        <button class="rt-btn {active('italic')}" title="Italic (Ctrl+I)" onclick={() => $editor?.chain().focus().toggleItalic().run()}>
+        <button class="rt-btn {active('italic')}" title={`${m.editor_italic()} (Ctrl+I)`} onclick={() => $editor?.chain().focus().toggleItalic().run()}>
           <span class="rt-btn-icon"><em>I</em></span>
-          <span class="rt-btn-label">Italic</span>
+          <span class="rt-btn-label">{m.editor_italic()}</span>
         </button>
-        <button class="rt-btn {active('underline')}" title="Underline (Ctrl+U)" onclick={() => $editor?.chain().focus().toggleUnderline().run()}>
+        <button class="rt-btn {active('underline')}" title={`${m.editor_underline()} (Ctrl+U)`} onclick={() => $editor?.chain().focus().toggleUnderline().run()}>
           <span class="rt-btn-icon"><u>U</u></span>
-          <span class="rt-btn-label">Underline</span>
+          <span class="rt-btn-label">{m.editor_underline()}</span>
         </button>
-        <button class="rt-btn {active('strike')}" title="Strikethrough" onclick={() => $editor?.chain().focus().toggleStrike().run()}>
+        <button class="rt-btn {active('strike')}" title={m.editor_strike()} onclick={() => $editor?.chain().focus().toggleStrike().run()}>
           <span class="rt-btn-icon"><s>S</s></span>
-          <span class="rt-btn-label">Strike</span>
+          <span class="rt-btn-label">{m.editor_strike()}</span>
         </button>
 
         <span class="rt-divider"></span>
 
         <!-- Colors -->
-        <label class="rt-btn cursor-pointer" title="Text color">
+        <label class="rt-btn cursor-pointer" title={m.editor_color()}>
           <span class="rt-btn-icon"><Icon name="text-color" size={20} /></span>
-          <span class="rt-btn-label">Color</span>
+          <span class="rt-btn-label">{m.editor_color()}</span>
           <input type="color" class="w-0 h-0 opacity-0 absolute" onchange={setColor} />
         </label>
-        <label class="rt-btn cursor-pointer" title="Highlight color">
+        <label class="rt-btn cursor-pointer" title={m.editor_highlight()}>
           <span class="rt-btn-icon"><Icon name="highlight-text" size={20} /></span>
-          <span class="rt-btn-label">Highlight</span>
+          <span class="rt-btn-label">{m.editor_highlight()}</span>
           <input type="color" value="#fde68a" class="w-0 h-0 opacity-0 absolute" onchange={setHighlight} />
         </label>
 
@@ -2073,9 +2074,9 @@
 
         <!-- Clear formatting — strips marks AND collapses to plain
              paragraph (the standard "Clear all formatting" action). -->
-        <button class="rt-btn" title="Clear all formatting" onclick={clearFormatting}>
+        <button class="rt-btn" title={m.editor_clear()} onclick={clearFormatting}>
           <span class="rt-btn-icon"><Icon name="clear" size={20} /></span>
-          <span class="rt-btn-label">Clear</span>
+          <span class="rt-btn-label">{m.editor_clear()}</span>
         </button>
       {:else if activeTab === 'insert'}
         <!-- #317 — the click opens an inline popover, not

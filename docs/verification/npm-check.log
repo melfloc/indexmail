@@ -4,7 +4,7 @@
 
 
 > ui@0.0.0 paraglide:compile
-> paraglide-js compile --project ./project.inlang --outdir ./src/paraglide
+> paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy localStorage preferredLanguage baseLocale
 
 ℹ [paraglide-js] Compiling inlang project ...
 ✔ [paraglide-js] Successfully compiled inlang project.
