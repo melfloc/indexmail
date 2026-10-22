@@ -1062,7 +1062,7 @@
     const themed = getComputedStyle(document.documentElement)
       .getPropertyValue('--color-primary-500')
       .trim()
-    const accent = themed || '#3b82f6'
+    const accent = themed || '#e68e0d'
 
     const wrap = document.createElement('div')
     wrap.style.position = 'fixed'
