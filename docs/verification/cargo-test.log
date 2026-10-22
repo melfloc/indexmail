@@ -1,47 +1,47 @@
    Compiling unkai-commands v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-commands)
+   Compiling unkai-mcp v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-mcp)
    Compiling unkai-crypto v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-crypto)
    Compiling unkai-jmap v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-jmap)
    Compiling unkai-discovery v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-discovery)
-   Compiling unkai-mcp v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-mcp)
    Compiling unkai-app v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/src-tauri)
    Compiling unkai-store v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-store)
    Compiling unkai-caldav v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-caldav)
-   Compiling unkai-smtp v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-smtp)
    Compiling unkai-imap v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-imap)
+   Compiling unkai-smtp v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-smtp)
    Compiling unkai-carddav v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-carddav)
    Compiling unkai-nextcloud v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-nextcloud)
    Compiling unkai-core v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-core)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.81s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.62s
      Running unittests src/main.rs (target/debug/deps/unkai_app-36c155d5153d666f)
 
 running 11 tests
-test badge::tests::nonzero_unread_paints_reddish ... ok
 test badge::tests::circle_edge_is_antialiased ... ok
-test updater::tests::flatpak_wins_over_appimage_and_is_managed ... ok
-test badge::tests::zero_unread_returns_unchanged_pixels ... ok
-test updater::tests::linux_without_appimage_is_a_managed_package ... ok
 test badge::tests::taskbar_overlay_some_when_nonzero ... ok
-test updater::tests::non_linux_is_always_native ... ok
-test updater::tests::linux_appimage_self_updates ... ok
 test badge::tests::taskbar_overlay_none_when_zero ... ok
+test badge::tests::zero_unread_returns_unchanged_pixels ... ok
+test badge::tests::nonzero_unread_paints_reddish ... ok
+test updater::tests::flatpak_wins_over_appimage_and_is_managed ... ok
+test updater::tests::linux_appimage_self_updates ... ok
+test updater::tests::linux_without_appimage_is_a_managed_package ... ok
+test updater::tests::non_linux_is_always_native ... ok
 test updater::tests::serialises_kebab_case_for_the_frontend ... ok
 test registry::tests::two_profiles_resolve_without_cross_talk ... ok
 
-test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_caldav-e4c8fb4647c19f4c)
 
 running 54 tests
-test calendars::tests::proppatch_body_includes_only_set_properties ... ok
-test calendars::tests::mkcalendar_body_escapes_angle_brackets ... ok
-test calendars::tests::mkcalendar_body_omits_color_when_none ... ok
 test calendars::tests::join_collection_url_handles_trailing_slashes ... ok
+test calendars::tests::mkcalendar_body_omits_color_when_none ... ok
+test calendars::tests::mkcalendar_body_escapes_angle_brackets ... ok
 test discovery::tests::filters_app_generated_pseudo_calendars ... ok
-test expand::tests::non_recurring_in_window_returns_master ... ok
+test calendars::tests::proppatch_body_includes_only_set_properties ... ok
+test discovery::tests::parses_read_only_privilege_set ... ok
 test discovery::tests::parses_single_calendar_and_skips_home_and_trashbin ... ok
+test expand::tests::non_recurring_in_window_returns_master ... ok
 test expand::tests::non_recurring_outside_window_is_dropped ... ok
 test expand::tests::normalises_until_without_z_to_utc ... ok
-test discovery::tests::parses_read_only_privilege_set ... ok
 test freebusy::tests::duration_parser_handles_common_shapes ... ok
 test freebusy::tests::nc_principal_home_uses_well_known_path ... ok
 test freebusy::tests::ignores_lines_outside_vfreebusy ... ok
@@ -52,8 +52,8 @@ test freebusy::tests::parses_fbtype_variants_and_durations ... ok
 test ical::tests::apple_geo_uri_parser_handles_params_and_queries ... ok
 test ical::tests::apple_structured_location_falls_back_to_geo_uri ... ok
 test ical::tests::captures_recurrence_id_override ... ok
-test ical::tests::captures_rrule_rdate_exdate ... ok
 test ical::tests::duration_parser_handles_common_shapes ... ok
+test ical::tests::captures_rrule_rdate_exdate ... ok
 test ical::tests::dtstart_plus_duration ... ok
 test ical::tests::geo_tolerates_comma_separator_and_rejects_out_of_range ... ok
 test ical::tests::geo_roundtrips_through_parse_and_build ... ok
@@ -65,55 +65,55 @@ test ical::tests::parses_simple_utc_event ... ok
 test ical::tests::standard_geo_wins_over_apple_fallback ... ok
 test ical::tests::tzid_resolves_to_utc_via_chrono_tz ... ok
 test ical::tests::unknown_tzid_falls_back_to_utc ... ok
-test sync::tests::parses_sync_collection_with_change_and_delete ... ok
 test sync::tests::parses_multiget_with_char_ref_line_endings ... ok
 test sync::tests::parses_multiget_with_inline_calendar_data ... ok
-test tasks::tests::build_falls_back_to_utc_for_unknown_zone ... ok
+test sync::tests::parses_sync_collection_with_change_and_delete ... ok
 test tasks::tests::build_emits_tzid_when_zone_provided ... ok
-test tasks::tests::build_roundtrips_essentials ... ok
+test tasks::tests::build_falls_back_to_utc_for_unknown_zone ... ok
 test tasks::tests::parses_completed_vtodo ... ok
 test tasks::tests::parses_simple_vtodo ... ok
 test tasks::tests::vevent_only_body_yields_no_tasks ... ok
+test tasks::tests::build_roundtrips_essentials ... ok
+test tasks::tests::vtodo_propfind_filters_pseudo_collections ... ok
 test write::tests::build_href_joins_safely ... ok
 test write::tests::uid_to_filename_strips_path_chars ... ok
-test tasks::tests::vtodo_propfind_filters_pseudo_collections ... ok
 test expand::tests::override_moved_out_of_window_is_dropped ... ok
-test expand::tests::weekly_rrule_expands_to_four_occurrences ... ok
 test expand::tests::malformed_rrule_falls_back_to_master ... ok
-test expand::tests::override_replaces_matching_occurrence ... ok
 test expand::tests::window_bound_is_half_open_on_upper_edge ... ok
+test expand::tests::override_replaces_matching_occurrence ... ok
 test expand::tests::exdate_removes_occurrence ... ok
 test expand::tests::rdate_adds_extra_occurrence ... ok
-test expand::tests::yearly_birthday_rrule_with_date_only_until_expands ... ok
 test expand::tests::yearly_birthday_rrule_with_until_without_z_expands ... ok
+test expand::tests::weekly_rrule_expands_to_four_occurrences ... ok
+test expand::tests::yearly_birthday_rrule_with_date_only_until_expands ... ok
 
 test result: ok. 54 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_carddav-ac4dc48dc99f259d)
 
 running 22 tests
-test discovery::tests::parses_single_addressbook_and_skips_home ... ok
 test discovery::tests::filters_app_generated_pseudo_addressbooks ... ok
-test sync::tests::parses_sync_collection_with_char_refs ... ok
-test sync::tests::parses_sync_collection_with_change_and_delete ... ok
+test discovery::tests::parses_single_addressbook_and_skips_home ... ok
 test vcard::tests::build_escapes_special_characters ... ok
+test sync::tests::multiget_preserves_folded_lines ... ok
 test vcard::tests::build_folds_long_photo_line ... ok
 test sync::tests::parses_multiget_with_char_ref_line_endings ... ok
-test sync::tests::multiget_preserves_folded_lines ... ok
-test vcard::tests::decodes_data_uri_photo ... ok
+test sync::tests::parses_sync_collection_with_char_refs ... ok
+test sync::tests::parses_sync_collection_with_change_and_delete ... ok
 test vcard::tests::empty_input_is_an_error_for_import ... ok
-test vcard::tests::import_keeps_cards_without_uid ... ok
+test vcard::tests::build_then_parse_round_trips_unescaped_fields ... ok
 test vcard::tests::falls_back_to_n_when_fn_absent ... ok
+test vcard::tests::import_keeps_cards_without_uid ... ok
+test vcard::tests::decodes_data_uri_photo ... ok
 test vcard::tests::extended_fields_round_trip ... ok
 test vcard::tests::missing_uid_is_an_error ... ok
 test vcard::tests::languages_and_note_round_trip_through_build_and_parse ... ok
-test vcard::tests::build_then_parse_round_trips_unescaped_fields ... ok
 test vcard::tests::parses_apple_group_qualified_properties ... ok
 test vcard::tests::parses_minimal_vcard ... ok
-test write::tests::build_href_joins_safely ... ok
 test vcard::tests::parses_extended_fields ... ok
-test write::tests::uid_to_filename_strips_path_chars ... ok
+test write::tests::build_href_joins_safely ... ok
 test vcard::tests::parses_multiple_concatenated_cards ... ok
+test write::tests::uid_to_filename_strips_path_chars ... ok
 
 test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
@@ -123,31 +123,31 @@ running 41 tests
 test contacts::vcard_key_decode_tests::decode_armored_with_escapes_yields_clean_bytes ... ok
 test contacts::vcard_key_decode_tests::decode_data_uri_with_escaped_separators_decodes_base64 ... ok
 test contacts::vcard_key_decode_tests::smime_decoder_takes_inline_certificate_pem ... ok
-test contacts::vcard_key_decode_tests::smime_decoder_takes_pkcs7_and_pkix_cert_data_uris ... ok
 test contacts::vcard_key_decode_tests::smime_decoder_takes_x509_user_cert_data_uri ... ok
-test contacts::vcard_key_decode_tests::unescape_handles_data_uri_separators ... ok
-test contacts::vcard_key_decode_tests::unescape_lone_trailing_backslash_is_preserved ... ok
+test contacts::vcard_key_decode_tests::smime_decoder_takes_pkcs7_and_pkix_cert_data_uris ... ok
 test contacts::vcard_key_decode_tests::the_two_decoders_are_mutually_exclusive ... ok
+test contacts::vcard_key_decode_tests::unescape_handles_data_uri_separators ... ok
 test contacts::vcard_key_decode_tests::unescape_preserves_double_backslash_n ... ok
+test contacts::vcard_key_decode_tests::unescape_lone_trailing_backslash_is_preserved ... ok
 test contacts::vcard_key_decode_tests::unescape_round_trips_armored_newlines ... ok
 test contacts::vcard_key_decode_tests::unescape_unknown_escape_is_preserved ... ok
 test contacts::vcard_key_decode_tests::untyped_data_uri_stays_pgp_for_backcompat ... ok
 test contacts_csv::tests::blank_lines_are_dropped_silently ... ok
 test contacts_csv::tests::cp1252_fallback_decodes_umlauts ... ok
-test contacts_csv::tests::doubled_quotes_are_literal ... ok
 test contacts_csv::tests::empty_and_headerless_files_error ... ok
+test contacts_csv::tests::doubled_quotes_are_literal ... ok
 test contacts_csv::tests::nameless_email_row_uses_email_as_display_name ... ok
 test contacts_csv::tests::home_and_business_addresses_stay_separate ... ok
 test contacts_csv::tests::parses_numbered_dialect_with_type_columns ... ok
-test contacts_csv::tests::quoted_fields_keep_delimiters_and_newlines ... ok
-test contacts_csv::tests::parses_spelled_out_dialect ... ok
 test contacts_csv::tests::semicolon_delimiter_is_sniffed ... ok
-test contacts_csv::tests::utf8_bom_is_stripped ... ok
-test geocode::tests::deserialises_a_real_response_shape ... ok
+test contacts_csv::tests::parses_spelled_out_dialect ... ok
 test contacts_csv::tests::unusable_rows_are_reported_not_fatal ... ok
+test contacts_csv::tests::utf8_bom_is_stripped ... ok
+test contacts_csv::tests::quoted_fields_keep_delimiters_and_newlines ... ok
 test geocode::tests::resolve_base_url_falls_back_to_default_on_empty ... ok
-test geocode::tests::deserialises_addressdetails_response ... ok
+test geocode::tests::deserialises_a_real_response_shape ... ok
 test geocode::tests::resolve_base_url_trims_trailing_slashes ... ok
+test geocode::tests::deserialises_addressdetails_response ... ok
 test geocode::tests::urlencoding_escapes_spaces_and_diacritics ... ok
 test geocode::tests::serialises_address_keys_as_camel_case ... ok
 test mail::search_criterion_tests::folder_operator_is_dropped ... ok
@@ -162,20 +162,20 @@ test profiles::tests::update_renames_and_reicons_and_persists ... ok
 test profiles::tests::startup_mode_roundtrips_and_validates_fixed_ids ... ok
 test contacts::vcard_key_decode_tests::get_contacts_recovers_extended_vcard_fields_from_the_cache ... ok
 
-test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_core-fa5c271fa30c28eb)
 
 running 10 tests
-test mail_util::tests::drafts_by_localized_name_fallback ... ok
 test mail_util::tests::drafts_by_special_use_attribute_wins_over_name ... ok
-test tls::tests::fingerprint_format ... ok
-test mail_util::tests::message_id_extraction_is_case_insensitive_and_stops_at_body ... ok
+test mail_util::tests::drafts_by_localized_name_fallback ... ok
 test url::tests::empty_rejected ... ok
+test mail_util::tests::message_id_extraction_is_case_insensitive_and_stops_at_body ... ok
 test url::tests::http_loopback_passes ... ok
+test tls::tests::fingerprint_format ... ok
+test url::tests::https_passes ... ok
 test url::tests::http_public_rejected ... ok
 test url::tests::http_userinfo_does_not_spoof_loopback ... ok
-test url::tests::https_passes ... ok
 test url::tests::other_schemes_rejected ... ok
 
 test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
@@ -186,42 +186,42 @@ running 27 tests
 test ops::tests::encrypt_with_no_recipients_is_an_error ... ok
 test smime::tests::certificate_email_reads_subject_alt_name ... ok
 test smime::tests::certificate_fingerprint_is_sha256_with_colons ... ok
-test smime::tests::certificate_subject_dn_contains_common_name_and_organisation ... ok
 test smime::tests::certificate_with_key_debug_redacts_private_key ... ok
+test smime::tests::certificate_subject_dn_contains_common_name_and_organisation ... ok
 test smime::tests::encrypt_with_no_recipients_is_an_error ... ok
 test smime::tests::mozilla_trust_store_builds_non_empty ... ok
 test smime::tests::encrypt_then_decrypt_round_trip ... ok
 test smime::tests::certificate_is_expired_accessor ... ok
 test smime::tests::pem_round_trip_through_parse ... ok
+test smime::tests::verify_chain_trusted_is_valid_green ... ok
 test smime::tests::pkcs12_round_trip_with_correct_passphrase ... ok
-test smime::tests::pkcs12_wrong_passphrase_is_a_clear_error ... ok
 test smime::tests::verify_self_signed_unknown_issuer_is_amber ... ok
 test smime::tests::verify_expired_signing_cert_is_amber ... ok
+test smime::tests::pkcs12_wrong_passphrase_is_a_clear_error ... ok
 test smime::tests::verify_tampered_payload_is_red ... ok
-test smime::tests::verify_chain_trusted_is_valid_green ... ok
-test smime::tests::verify_tofu_fingerprint_is_valid_green ... ok
 test smime::tests::verify_wrong_held_cert_falls_through_to_untrusted ... ok
-test ops::tests::private_key_debug_redacts_passphrase ... ok
-test ops::tests::encrypt_then_decrypt_round_trip ... ok
+test smime::tests::verify_tofu_fingerprint_is_valid_green ... ok
 test ops::tests::sign_detached_then_verify ... ok
-test ops::tests::sign_and_encrypt_then_decrypt_and_verify_round_trip ... ok
-test ops::tests::pick_signing_subkey_finds_flagged_subkey ... ok
-test ops::tests::verify_detached_reports_unknown_signer_when_no_trusted_key_matches ... ok
+test ops::tests::encrypt_then_decrypt_round_trip ... ok
 test ops::tests::pick_signing_subkey_returns_none_when_no_subkey_is_flagged ... ok
-test ops::tests::sign_and_encrypt_then_decrypt_and_verify_uses_signing_subkey_when_present ... ok
+test ops::tests::private_key_debug_redacts_passphrase ... ok
+test ops::tests::sign_and_encrypt_then_decrypt_and_verify_round_trip ... ok
+test ops::tests::verify_detached_reports_unknown_signer_when_no_trusted_key_matches ... ok
 test ops::tests::sign_detached_then_verify_uses_signing_subkey_when_present ... ok
+test ops::tests::pick_signing_subkey_finds_flagged_subkey ... ok
+test ops::tests::sign_and_encrypt_then_decrypt_and_verify_uses_signing_subkey_when_present ... ok
 
-test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 28.93s
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 45.44s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_discovery-02698ac0de1cb168)
 
 running 6 tests
-test autoconfig::tests::missing_imap_is_not_found ... ok
-test autoconfig::tests::parses_imap_and_smtp ... ok
-test presets::tests::matches_domain_case_insensitively ... ok
-test presets::tests::table_is_internally_consistent ... ok
-test presets::tests::unknown_domain_returns_none ... ok
 test presets::tests::to_discovered_tags_preset_source ... ok
+test autoconfig::tests::missing_imap_is_not_found ... ok
+test presets::tests::matches_domain_case_insensitively ... ok
+test presets::tests::unknown_domain_returns_none ... ok
+test autoconfig::tests::parses_imap_and_smtp ... ok
+test presets::tests::table_is_internally_consistent ... ok
 
 test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
@@ -229,37 +229,37 @@ test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 running 36 tests
 test attachment_filename::tests::no_filename_returns_attachment_sentinel ... ok
-test attachment_filename::tests::content_type_name_fallback ... ok
 test attachment_filename::tests::plain_ascii_filename_unchanged ... ok
-test attachment_filename::tests::pre_corrupted_ufffd_preserved_faithfully ... ok
-test attachment_filename::tests::raw_utf8_bytes_decoded_via_mail_parser ... ok
+test attachment_filename::tests::content_type_name_fallback ... ok
 test attachment_filename::tests::raw_latin1_bytes_recovered_via_fallback ... ok
-test client::tests::extract_signed_part_yields_canonical_first_part_bytes ... ok
-test attachment_filename::tests::rfc2231_split_multibyte_recovered ... ok
+test attachment_filename::tests::pre_corrupted_ufffd_preserved_faithfully ... ok
 test attachment_filename::tests::raw_latin1_bytes_unquoted_recovered ... ok
+test attachment_filename::tests::rfc2231_split_multibyte_recovered ... ok
+test client::tests::extract_signed_part_yields_canonical_first_part_bytes ... ok
 test client::tests::parse_detects_disposition_notification_to_header ... ok
+test attachment_filename::tests::raw_utf8_bytes_decoded_via_mail_parser ... ok
 test client::tests::parse_mdn_report_rejects_ordinary_mail ... ok
 test client::tests::parse_mdn_report_extracts_original_id_and_disposition ... ok
 test client::tests::pgp_mime_encrypted_is_unwrapped_when_bridge_present ... ok
 test client::tests::pgp_mime_encrypted_without_bridge_falls_back_to_plaintext ... ok
 test client::tests::pgp_mime_signed_inside_encrypted_marks_protection_signed_and_encrypted ... ok
-test client::tests::plain_mail_has_no_mdn_request ... ok
 test client::tests::quoted_mailbox_arg_escapes_quote_and_backslash ... ok
+test client::tests::plain_mail_has_no_mdn_request ... ok
 test client::tests::pgp_multipart_signed_is_verified ... ok
-test client::tests::quoted_mailbox_arg_passes_simple_atoms_unquoted ... ok
 test client::tests::quoted_mailbox_arg_quotes_names_with_spaces ... ok
+test client::tests::quoted_mailbox_arg_passes_simple_atoms_unquoted ... ok
 test client::tests::quoted_mailbox_arg_quotes_other_atom_specials ... ok
 test client::tests::plain_mail_passes_through_unchanged_regardless_of_bridge ... ok
-test client::tests::signed_invalid_outcome_surfaces_red ... ok
 test client::tests::smime_enveloped_is_unwrapped_when_bridge_present ... ok
-test client::tests::smime_enveloped_with_inner_signature_marks_signed_and_encrypted ... ok
+test client::tests::signed_invalid_outcome_surfaces_red ... ok
 test client::tests::smime_enveloped_without_bridge_falls_back_to_plaintext ... ok
+test client::tests::smime_enveloped_with_inner_signature_marks_signed_and_encrypted ... ok
 test client::tests::to_wire_is_bare_mutf7_no_quoting ... ok
 test inline_images::tests::collects_inline_disposition_without_content_id ... ok
-test inline_images::tests::non_image_parts_with_a_content_id_are_ignored ... ok
+test inline_images::tests::collects_the_cid_referenced_image_only ... ok
 test client::tests::smime_multipart_signed_is_verified ... ok
 test client::tests::smime_opaque_signed_data_is_not_claimed ... ok
-test inline_images::tests::collects_the_cid_referenced_image_only ... ok
+test inline_images::tests::non_image_parts_with_a_content_id_are_ignored ... ok
 test inline_images::tests::plain_message_yields_nothing ... ok
 test inline_images::tests::part_id_matches_the_attachment_indexing ... ok
 test mutf7::tests::malformed_passes_through ... ok
@@ -276,56 +276,55 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running tests/mock_server.rs (target/debug/deps/mock_server-ce9c9bb1b910857c)
 
 running 16 tests
-test test_event_source_url ... ok
 test test_connection_test ... ok
+test test_event_source_url ... ok
 test test_list_folders ... ok
 test test_fetch_envelopes ... ok
-test test_fetch_message_pgp_signed_stamps_signed ... ok
-test test_fetch_raw_message_returns_smime_blob_bytes ... ok
 test test_fetch_message_smime_signed_stamps_signed ... ok
-test test_fetch_message_smime_stamps_encrypted ... ok
+test test_fetch_message_pgp_signed_stamps_signed ... ok
 test test_mark_as_read ... ok
-test test_fetch_message ... ok
 test test_fetch_message_pgp_stamps_encrypted ... ok
+test test_fetch_message ... ok
 test test_fetch_raw_message_returns_blob_bytes ... ok
-test test_send_email ... ok
+test test_fetch_raw_message_returns_smime_blob_bytes ... ok
+test test_fetch_message_smime_stamps_encrypted ... ok
 test test_session_bad_credentials ... ok
-test test_session_discovery ... ok
 test test_send_email_requests_dsn_envelope_parameters ... ok
+test test_send_email ... ok
+test test_session_discovery ... ok
 
-test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_mcp-a694c69dc62583f1)
 
 running 53 tests
 test auth::tests::non_loopback_hosts_rejected ... ok
-test auth::tests::generated_tokens_are_distinct_and_url_safe ... ok
 test auth::tests::loopback_hosts_accepted ... ok
+test auth::tests::generated_tokens_are_distinct_and_url_safe ... ok
 test auth::tests::token_comparison ... ok
 test invite_html::tests::escape_covers_the_five_specials ... ok
 test invite_html::tests::format_range_same_day_and_cross_day ... ok
 test invite_html::tests::meeting_card_renders_optional_rows_and_escapes ... ok
 test invite_html::tests::meeting_card_without_talk_url_has_no_cta ... ok
 test invite_html::tests::talk_card_shape_matches_the_ts_builder ... ok
-test calendar::tests::rsvp_rejects_unknown_events_and_answers ... ok
 test calendar::tests::get_events_rejects_inverted_ranges ... ok
-test mail::tests::draft_outgoing_carries_threading_headers ... ok
-test contacts::tests::search_contacts_requires_a_query ... ok
-test mail::tests::draft_outgoing_without_parent_or_display_name ... ok
-test calendar::tests::create_event_on_a_local_calendar_lands_in_the_cache ... ok
-test contacts::tests::create_contact_requires_a_contacts_capable_source ... ok
-test calendar::tests::get_events_returns_cached_events_in_range ... ok
-test calendar::tests::create_event_rejects_unknown_calendars_and_bad_attendees ... ok
-test calendar::tests::create_event_rejects_read_only_calendars_before_any_network ... ok
 test calendar::tests::list_calendars_exposes_the_read_only_flag ... ok
-test mail::tests::mail_tools_registered_with_expected_defaults ... ok
-test contacts::tests::create_contact_on_a_local_source_is_searchable ... ok
-test mail::tests::truncation_cuts_on_char_boundaries ... ok
+test mail::tests::draft_outgoing_carries_threading_headers ... ok
+test mail::tests::draft_outgoing_without_parent_or_display_name ... ok
+test calendar::tests::create_event_rejects_read_only_calendars_before_any_network ... ok
 test mail::tests::create_draft_reply_ref_must_be_cached ... ok
+test contacts::tests::create_contact_requires_a_contacts_capable_source ... ok
+test calendar::tests::rsvp_rejects_unknown_events_and_answers ... ok
+test calendar::tests::create_event_rejects_unknown_calendars_and_bad_attendees ... ok
 test calendar::tests::rsvp_records_the_answer_for_a_local_calendar ... ok
-test mail::tests::create_draft_validates_before_touching_the_network ... ok
-test meeting::tests::failed_draft_rolls_back_event_then_room ... ok
+test contacts::tests::search_contacts_requires_a_query ... ok
+test contacts::tests::create_contact_on_a_local_source_is_searchable ... ok
+test mail::tests::mail_tools_registered_with_expected_defaults ... ok
+test mail::tests::truncation_cuts_on_char_boundaries ... ok
+test calendar::tests::get_events_returns_cached_events_in_range ... ok
+test calendar::tests::create_event_on_a_local_calendar_lands_in_the_cache ... ok
 test mail::tests::get_message_missing_from_cache_is_an_error ... ok
+test meeting::tests::failed_draft_rolls_back_event_then_room ... ok
 test meeting::tests::failed_event_rolls_back_the_room ... ok
 test meeting::tests::failed_rollback_is_reported_not_swallowed ... ok
 test meeting::tests::failed_room_aborts_before_any_other_step ... ok
@@ -333,233 +332,234 @@ test meeting::tests::happy_path_runs_room_event_draft_without_rollbacks ... ok
 test meeting::tests::without_room_the_talk_step_is_skipped ... ok
 test nc::tests::dav_features_follow_the_snapshot ... ok
 test nc::tests::local_source_only_offers_what_its_synthetic_snapshot_says ... ok
+test mail::tests::create_draft_validates_before_touching_the_network ... ok
 test nc::tests::nextcloud_without_snapshot_counts_for_dav_but_not_talk ... ok
 test nc::tests::organizer_local_synthesises_from_the_host ... ok
 test registry::tests::availability_gates_on_connected_features ... ok
-test registry::tests::builtin_registry_contains_ping ... ok
 test registry::tests::explicit_map_entry_overrides_class_default ... ok
+test registry::tests::builtin_registry_contains_ping ... ok
 test registry::tests::groupware_tools_registered_with_expected_defaults ... ok
 test registry::tests::read_tools_default_on_write_tools_default_off ... ok
-test mail::tests::list_accounts_is_a_sanitized_projection ... ok
 test mail::tests::list_folders_lists_and_rejects_unknown_accounts ... ok
+test mail::tests::list_accounts_is_a_sanitized_projection ... ok
 test mail::tests::get_message_signed_only_is_not_redacted ... ok
-test meeting::precheck_tests::composite_prechecks_fire_before_any_side_effect ... ok
-test mail::tests::get_message_strips_html_when_no_text_part ... ok
-test meeting::precheck_tests::composite_refuses_talk_room_when_the_source_has_no_talk ... ok
 test mail::tests::get_thread_returns_the_whole_conversation ... ok
+test mail::tests::get_message_strips_html_when_no_text_part ... ok
 test mail::tests::get_message_withholds_encrypted_content_by_default ... ok
+test meeting::precheck_tests::composite_refuses_talk_room_when_the_source_has_no_talk ... ok
 test meeting::precheck_tests::composite_requires_drafts_folder_and_writable_calendar ... ok
+test meeting::precheck_tests::composite_prechecks_fire_before_any_side_effect ... ok
 test mail::tests::search_round_trip_redacts_encrypted_snippets ... ok
 test registry::tests::ping_reports_ok ... ok
 
-test result: ok. 53 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.38s
+test result: ok. 53 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.32s
 
      Running tests/server.rs (target/debug/deps/server-e7a113a4854c695c)
 
 running 9 tests
 test locked_vault_is_503_after_auth ... ok
 test browser_origin_is_403 ... ok
-test missing_token_is_401 ... ok
 test non_loopback_host_is_403 ... ok
-test wrong_token_is_401 ... ok
-test disable_stops_listener_and_reenable_starts_it ... ok
+test missing_token_is_401 ... ok
 test revoked_token_is_401 ... ok
+test wrong_token_is_401 ... ok
 test initialize_list_and_enablement ... ok
+test disable_stops_listener_and_reenable_starts_it ... ok
 test mail_tools_search_and_redaction_end_to_end ... ok
 
-test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.68s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_nextcloud-02ca732a13373acd)
 
 running 24 tests
 test capabilities::tests::missing_apps_are_false ... ok
+test files::tests::decodes_percent_escapes ... ok
 test capabilities::tests::parses_full_caps ... ok
 test files::tests::normalises_input_path ... ok
 test files::tests::encodes_path_segments_but_keeps_slashes ... ok
-test files::tests::decodes_percent_escapes ... ok
-test files::tests::parses_propfind_listing ... ok
-test files::tests::parses_root_listing_with_shouty_prefix ... ok
-test forms::tests::missing_link_share_is_none ... ok
 test files::tests::empty_directory_listing ... ok
-test forms::tests::full_form_finds_link_share ... ok
-test forms::tests::fresh_form_with_null_fields_parses ... ok
+test files::tests::parses_root_listing_with_shouty_prefix ... ok
 test forms::tests::ocs_failure_surfaces_message ... ok
-test forms::tests::parses_partial_form_list ... ok
+test forms::tests::fresh_form_with_null_fields_parses ... ok
+test files::tests::parses_propfind_listing ... ok
 test shares::tests::parses_share_id_from_number ... ok
-test shares::tests::parses_list_response_filters_public_links ... ok
-test shares::tests::parses_list_response_tolerates_null_strings_on_non_public_rows ... ok
+test forms::tests::full_form_finds_link_share ... ok
+test forms::tests::missing_link_share_is_none ... ok
+test forms::tests::parses_partial_form_list ... ok
+test shares::tests::surfaces_ocs_level_failure ... ok
 test shares::tests::parses_successful_share ... ok
 test shares::tests::surfaces_bad_json_as_protocol_error ... ok
+test shares::tests::parses_list_response_tolerates_null_strings_on_non_public_rows ... ok
 test talk::tests::parses_create_room ... ok
-test shares::tests::surfaces_ocs_level_failure ... ok
 test talk::tests::surfaces_bad_json_as_protocol_error ... ok
-test talk::tests::parses_list_rooms ... ok
+test shares::tests::parses_list_response_filters_public_links ... ok
 test talk::tests::unknown_room_type_falls_back_to_other ... ok
 test talk::tests::surfaces_ocs_failure ... ok
+test talk::tests::parses_list_rooms ... ok
 
 test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_smtp-7bd66932935f3d3a)
 
 running 38 tests
-test client::tests::canonicalize_is_idempotent ... ok
-test client::tests::base64_mime_body_wraps_at_76_and_round_trips ... ok
-test client::tests::case_insensitive_redundancy_check ... ok
-test client::tests::drops_redundant_quoted_display_name_equal_to_email ... ok
-test client::tests::drops_redundant_display_name_equal_to_email ... ok
-test client::tests::dsn_notify_params_render_on_rcpt_command ... ok
 test client::tests::canonicalize_normalises_line_endings_and_strips_trailing_whitespace ... ok
-test client::tests::ehlo_scan_detects_dsn_keyword ... ok
-test client::tests::ehlo_scan_ignores_greeting_and_lookalikes ... ok
+test client::tests::base64_mime_body_wraps_at_76_and_round_trips ... ok
+test client::tests::drops_redundant_display_name_equal_to_email ... ok
 test client::tests::automatic_mdn_reports_automatic_action_mode ... ok
-test client::tests::extract_inner_preserves_folded_continuation_lines ... ok
-test client::tests::envelope_from_email_includes_cc_but_not_bcc ... ok
-test client::tests::keeps_real_display_name ... ok
-test client::tests::extract_inner_strips_routing_keeps_content_type ... ok
+test client::tests::canonicalize_is_idempotent ... ok
+test client::tests::dsn_notify_params_render_on_rcpt_command ... ok
+test client::tests::case_insensitive_redundancy_check ... ok
 test client::tests::crypto_outer_headers_carry_receipt_request ... ok
-test client::tests::mdn_report_field_block_names_original_message_and_disposition ... ok
+test client::tests::ehlo_scan_ignores_greeting_and_lookalikes ... ok
+test client::tests::ehlo_scan_detects_dsn_keyword ... ok
+test client::tests::drops_redundant_quoted_display_name_equal_to_email ... ok
+test client::tests::extract_inner_preserves_folded_continuation_lines ... ok
+test client::tests::extract_inner_strips_routing_keeps_content_type ... ok
+test client::tests::keeps_real_display_name ... ok
+test client::tests::envelope_from_email_includes_cc_but_not_bcc ... ok
 test client::tests::mdn_report_is_multipart_report_with_disposition_notification_type ... ok
-test client::tests::mdn_report_threads_under_the_original ... ok
+test client::tests::mdn_report_field_block_names_original_message_and_disposition ... ok
 test client::tests::passes_through_bare_address ... ok
 test client::tests::outer_wrapper_advertises_multipart_encrypted_pgp_protocol ... ok
+test client::tests::mdn_report_threads_under_the_original ... ok
 test client::tests::outer_wrapper_carries_ciphertext_in_octet_stream_part ... ok
 test client::tests::outer_wrapper_carries_version_part_first ... ok
 test client::tests::no_receipt_request_means_no_header ... ok
-test client::tests::plan_with_bcc_only_skips_the_visible_copy ... ok
 test client::tests::signed_path_envelope_includes_bcc ... ok
 test client::tests::smime_enveloped_outer_is_single_pkcs7_mime_enveloped_data_part ... ok
 test client::tests::request_read_receipt_stamps_disposition_notification_to ... ok
+test client::tests::plan_with_bcc_only_skips_the_visible_copy ... ok
+test client::tests::signed_outer_advertises_pgp_signature_protocol_and_sha256_micalg ... ok
 test client::tests::signed_outer_signed_bytes_match_wire_first_part ... ok
 test client::tests::signed_outer_carries_signature_in_pgp_signature_part ... ok
-test client::tests::signed_outer_advertises_pgp_signature_protocol_and_sha256_micalg ... ok
 test client::tests::plan_without_bcc_emits_one_envelope_to_visible_recipients ... ok
-test client::tests::plan_strips_display_names_before_handing_recipients_to_bridge ... ok
 test client::tests::smime_signed_outer_advertises_pkcs7_signature_protocol_and_sha256_micalg ... ok
 test client::tests::smime_signed_outer_carries_signature_in_pkcs7_signature_part ... ok
 test client::tests::smime_signed_signed_bytes_match_wire_first_part ... ok
-test client::tests::plan_with_bcc_isolates_each_bcc_in_its_own_envelope ... ok
+test client::tests::plan_strips_display_names_before_handing_recipients_to_bridge ... ok
 test client::tests::plan_with_bcc_keeps_bcc_out_of_every_copys_headers ... ok
 test client::tests::smime_enveloped_plan_isolates_each_bcc_in_its_own_envelope ... ok
+test client::tests::plan_with_bcc_isolates_each_bcc_in_its_own_envelope ... ok
 
 test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
      Running unittests src/lib.rs (target/debug/deps/unkai_store-785e2b5189248f7f)
 
 running 112 tests
-test app_settings::tests::missing_file_yields_defaults ... ok
-test app_settings::tests::default_settings_roundtrip ... ok
 test app_settings::tests::missing_fields_fall_back_to_default ... ok
+test app_settings::tests::default_settings_roundtrip ... ok
+test app_settings::tests::missing_file_yields_defaults ... ok
+test cache::calendars::tests::range_filter_is_half_open_and_includes_ongoing ... ok
+test cache::calendars::tests::list_events_for_expansion_splits_rows_correctly ... ok
 test cache::calendars::tests::wipe_nextcloud_calendars_clears_everything ... ok
 test account_store::tests::update_replaces_fields ... ok
-test cache::contacts::tests::delta_applies_deletes_and_updates ... ok
+test cache::calendars::tests::upsert_preserves_sync_token_but_updates_name_and_ctag ... ok
 test cache::calendars::tests::upsert_and_list_calendars ... ok
 test cache::calendars::tests::master_and_override_coexist_distinct_ids ... ok
-test cache::calendars::tests::upsert_preserves_sync_token_but_updates_name_and_ctag ... ok
-test cache::calendars::tests::re_syncing_an_href_drops_removed_overrides ... ok
 test account_store::tests::add_load_remove_roundtrip ... ok
 test cache::geocode::tests::canonicalise_collapses_whitespace_and_lowercases ... ok
 test cache::key::tests::crash_leftover_with_matching_copies_finishes_the_delete ... ok
 test cache::key::tests::diverged_copies_are_both_kept ... ok
 test cache::key::tests::failed_write_keeps_the_legacy_entry ... ok
+test cache::calendars::tests::apply_delta_upserts_and_deletes ... ok
 test cache::key::tests::migrates_legacy_entry_and_deletes_it_after_verify ... ok
 test cache::key::tests::no_ops_without_a_legacy_entry ... ok
-test cache::calendars::tests::range_filter_is_half_open_and_includes_ongoing ... ok
-test cache::calendars::tests::list_events_for_expansion_splits_rows_correctly ... ok
-test cache::calendars::tests::apply_delta_upserts_and_deletes ... ok
+test cache::contacts::tests::delta_applies_deletes_and_updates ... ok
 test cache::calendars::tests::upsert_prunes_missing_calendars_and_cascades_events ... ok
-test cache::contacts::tests::wipe_clears_sync_state_too ... ok
+test cache::calendars::tests::re_syncing_an_href_drops_removed_overrides ... ok
+test cache::contacts::tests::per_addressbook_count_scopes_to_the_book ... ok
 test cache::pgp_keys::tests::source_round_trip_via_string ... ok
-test cache::geocode::tests::cache_miss_for_different_lang ... ok
+test cache::contacts::tests::search_excludes_contacts_without_email ... ok
 test cache::contacts::tests::list_contacts_feeds_vcard_raw_to_the_hydrate_closure ... ok
 test cache::search::tests::parse_date_operators ... ok
 test cache::search::tests::parse_date_periods ... ok
+test cache::contacts::tests::wipe_clears_sync_state_too ... ok
 test cache::search::tests::parse_folder_operators ... ok
 test cache::search::tests::parse_free_text ... ok
 test cache::search::tests::parse_ignores_urls ... ok
 test cache::search::tests::parse_invalid_date_falls_back_to_text ... ok
-test cache::contacts::tests::search_excludes_contacts_without_email ... ok
-test cache::search::tests::parse_on_month_covers_whole_month ... ok
 test cache::search::tests::parse_operators ... ok
+test cache::search::tests::parse_on_month_covers_whole_month ... ok
 test cache::search::tests::parse_quoted_phrase ... ok
 test cache::search::tests::parse_state_operators ... ok
 test cache::search::tests::parse_repeated_date_operators_intersect ... ok
+test cache::geocode::tests::cache_miss_for_different_lang ... ok
 test cache::geocode::tests::cache_roundtrip_within_ttl ... ok
-test cache::contacts::tests::per_addressbook_count_scopes_to_the_book ... ok
-test cache::notes::tests::delta_upserts_and_deletes ... ok
-test cache::notes::tests::upsert_and_get_round_trip ... ok
-test cache::contacts::tests::upsert_then_search_finds_by_name_and_email ... ok
-test cache::pgp_keys::tests::delete_is_noop_on_missing_fingerprint ... ok
 test cache::pgp_keys::tests::lookup_by_email_returns_newest_first ... ok
+test cache::notes::tests::upsert_and_get_round_trip ... ok
+test cache::notes::tests::delta_upserts_and_deletes ... ok
 test cache::notes::tests::wipe_account_clears_notes_and_sync_state ... ok
+test cache::pgp_keys::tests::delete_is_noop_on_missing_fingerprint ... ok
+test cache::contacts::tests::upsert_then_search_finds_by_name_and_email ... ok
 test cache::pgp_keys::tests::upsert_and_lookup_by_fingerprint ... ok
 test cache::pgp_keys::tests::upsert_replaces_existing_row_for_same_fingerprint ... ok
 test cache::search::tests::search_filter_has_attachment ... ok
-test cache::search::tests::search_filter_unread_only ... ok
-test cache::search::tests::search_filters_by_scope ... ok
-test cache::smime_certs::tests::source_round_trip_via_string ... ok
 test cache::search::tests::search_hit_carries_protection ... ok
 test cache::search::tests::search_operator_from ... ok
-test cache::search::tests::search_matches_partial_prefix ... ok
+test cache::smime_certs::tests::source_round_trip_via_string ... ok
+test cache::search::tests::search_filters_by_scope ... ok
+test cache::search::tests::search_filter_unread_only ... ok
+test cache::search::tests::search_date_operators ... ok
 test cache::search::tests::search_in_operator_overrides_scope ... ok
 test cache::search::tests::search_matches_subject_and_body ... ok
-test cache::search::tests::search_date_operators ... ok
+test cache::search::tests::search_matches_partial_prefix ... ok
 test cache::search::tests::search_empty_query_returns_recent ... ok
-test cache::smime_certs::tests::delete_is_noop_on_missing_fingerprint ... ok
-test cache::search::tests::search_results_newest_first ... ok
-test cache::search::tests::search_operators_combine_with_and ... ok
-test cache::smime_certs::tests::upsert_and_lookup_by_fingerprint ... ok
-test cache::smime_certs::tests::upsert_replaces_existing_row_for_same_fingerprint ... ok
 test cache::smime_certs::tests::lookup_by_email_returns_newest_first ... ok
+test cache::smime_certs::tests::upsert_and_lookup_by_fingerprint ... ok
+test cache::smime_certs::tests::delete_is_noop_on_missing_fingerprint ... ok
 test cache::tasks::tests::task_lists_delta_replaces_set ... ok
+test cache::smime_certs::tests::upsert_replaces_existing_row_for_same_fingerprint ... ok
+test cache::search::tests::search_operators_combine_with_and ... ok
+test cache::search::tests::search_results_newest_first ... ok
 test cache::tests::folders_preserve_server_order ... ok
-test cache::tasks::tests::tasks_delta_upserts_and_deletes ... ok
 test cache::tasks::tests::wipe_account_clears_lists_and_tasks ... ok
+test cache::tasks::tests::tasks_delta_upserts_and_deletes ... ok
 test cache::tests::folders_roundtrip ... ok
 test cache::tests::uid_from_email_id_handles_colons_in_folder ... ok
 test cache::tests::mdn_request_persists_and_handled_state_survives_refetch ... ok
 test cache::tests::migrations_are_idempotent ... ok
 test cache::tests::outbox_enqueue_list_count_remove_roundtrip ... ok
-test cache::tests::message_roundtrip ... ok
-test fido::tests::plain_hex_treated_as_plain_envelope ... ok
 test cache::tests::sent_receipt_lifecycle ... ok
+test fido::tests::plain_hex_treated_as_plain_envelope ... ok
+test cache::tests::message_roundtrip ... ok
 test fido::tests::unwrap_with_wrong_prf_fails ... ok
 test fido::tests::wrap_then_unwrap_roundtrips_fido ... ok
-test cache::tests::pin_and_priority_roundtrip ... ok
-test link_check::tests::extract_host_strips_scheme_and_trailing_path ... ok
 test cache::tests::sync_state_roundtrip ... ok
+test link_check::tests::extract_host_strips_scheme_and_trailing_path ... ok
+test cache::tests::pin_and_priority_roundtrip ... ok
 test cache::tests::starred_setter_roundtrip ... ok
-test link_check::tests::lookup_falls_back_to_host_match ... ok
 test cache::tests::reminder_roundtrip ... ok
+test link_check::tests::lookup_finds_exact_url ... ok
 test link_check::tests::trim_url_drops_single_trailing_slash ... ok
 test paths::tests::layout_hangs_off_the_root ... ok
+test link_check::tests::lookup_falls_back_to_host_match ... ok
 test profiles::tests::crash_between_registry_write_and_move_resumes_same_profile ... ok
-test link_check::tests::lookup_finds_exact_url ... ok
-test cache::tests::to_addrs_roundtrip_and_coalesce_guard ... ok
 test profiles::tests::fresh_install_creates_one_default_profile ... ok
+test link_check::tests::lookup_returns_none_for_safe_url ... ok
 test profiles::tests::legacy_layout_migrates_into_profile_dir ... ok
+test profiles::tests::registry_roundtrips_and_tolerates_missing_fields ... ok
+test profiles::tests::migration_never_clobbers_existing_profile_files ... ok
 test profiles::tests::migration_is_idempotent ... ok
 test profiles::tests::startup_mode_parses_legacy_single_id_fixed ... ok
-test profiles::tests::registry_roundtrips_and_tolerates_missing_fields ... ok
 test profiles::tests::startup_profile_resolution ... ok
-test profiles::tests::migration_never_clobbers_existing_profile_files ... ok
-test link_check::tests::lookup_returns_none_for_safe_url ... ok
 test settings_bundle::tests::looks_like_bundle_accepts_minimal ... ok
 test settings_bundle::tests::looks_like_bundle_rejects_garbage ... ok
-test profiles::tests::theme_paths_are_rewritten_to_the_profile_dir ... ok
 test settings_bundle::tests::rejects_future_version ... ok
-test cache::tests::upsert_and_read_envelopes_newest_first ... ok
+test cache::tests::to_addrs_roundtrip_and_coalesce_guard ... ok
 test settings_bundle::tests::roundtrip_default_bundle ... ok
+test profiles::tests::theme_paths_are_rewritten_to_the_profile_dir ... ok
+test cache::tests::upsert_and_read_envelopes_newest_first ... ok
 test link_check::tests::status_reflects_replace_all ... ok
 test shared_cache::tests::migrations_create_the_urlhaus_tables ... ok
-test cache::tests::upsert_refreshes_flags ... ok
 test shared_cache::tests::reopening_is_idempotent ... ok
+test cache::tests::upsert_refreshes_flags ... ok
 test cache::tests::wipe_account_clears_everything ... ok
 test cache::tests::wipe_folder_is_scoped ... ok
 test cache::tests::outbox_list_all_orders_oldest_first ... ok
-test fido::tests::unwrap_with_wrong_passphrase_fails ... ok
 test fido::tests::wrap_then_unwrap_roundtrips_passphrase ... ok
+test fido::tests::unwrap_with_wrong_passphrase_fails ... ok
 
-test result: ok. 112 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.45s
+test result: ok. 112 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.90s
 
    Doc-tests unkai_caldav
 
@@ -632,7 +632,7 @@ test crates/unkai-smtp/src/client.rs - client::SmtpClient (line 30) ... ignored
 
 test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-all doctests ran in 0.13s; merged doctests compilation took 0.12s
+all doctests ran in 0.12s; merged doctests compilation took 0.12s
    Doc-tests unkai_store
 
 running 0 tests

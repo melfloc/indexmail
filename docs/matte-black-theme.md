@@ -112,9 +112,12 @@ untouched.
 | `ui/src/lib/themes/matte-black.css` | New bundled Skeleton theme. |
 | `ui/src/app.css` | Imports the theme; scoped Matte Black chrome; token-driven focus ring. |
 | `ui/src/lib/theme.ts` | Registers the theme, makes it the fallback/default, adds `darkOnly`. |
-| `ui/src/lib/AccountSettings.svelte` | Locale labels, localized settings categories, dark-only mode guard. |
-| `ui/src/lib/MailList.svelte` | Compact rows, 32 px avatars, sender/subject/date hierarchy, border separators, no quick-action shadows. |
-| `ui/src/lib/Sidebar.svelte` | Compact folder rows. |
+| `ui/src/lib/AccountSettings.svelte` | Locale labels, localized settings categories and Design panel, dark-only mode guard. |
+| `ui/src/lib/MailList.svelte` | Compact rows, 32 px avatars, display-name sender, neutral unread tint, sender/subject/date hierarchy, border separators, no quick-action shadows. |
+| `ui/src/lib/Sidebar.svelte` | Compact folder rows; localized standard folder names. |
+| `ui/src/lib/Compose.svelte` / `RichTextEditor.svelte` | Composer header, tabs and formatting-ribbon labels plus the opaque-input fix. |
+| `ui/src/lib/AccountSetup.svelte` | Neutral wizard heading instead of the accent-coloured title. |
+| `ui/project.inlang/settings.json` / `ui/package.json` | Paraglide strategy is passed to the CLI compile too, so the Spanish pin survives `npm run check` and a restart. |
 | `crates/unkai-core/src/models.rs` | First-run default: `matte-black` + `ThemeMode::Dark`. |
 | `crates/unkai-commands/src/settings.rs` | Removing the active custom theme falls back to Matte Black. |
 
@@ -124,8 +127,9 @@ untouched.
 - Remote images remain blocked by default; `auto_load_remote_images` is still
   `false` in `AppSettings::default()`.
 - No telemetry, analytics, or new outbound requests were added. The only
-  network activity in this work was the local GreenMail test server used for
-  visual checks; it is not part of the repo.
+  network activity in this work was the local GreenMail server and an ephemeral
+  Ethereal test account used for visual checks; neither is part of the repo,
+  and both were deleted when the test session ended.
 - No credentials or secrets are committed. Passwords continue to go through the
   OS keyring; the repository contains no `.env`, token, or key material.
 
