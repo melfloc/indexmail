@@ -15,9 +15,12 @@ They are kept as design evidence for the WIP branch:
 - `05-remote-images-blocked.png` — remote images blocked by default. This is the
   security regression check; the HTML body is synthetic.
 
-Still to capture with real mail: the first-run wizard with the final neutral
-heading, the final composer after the editor-tab pass, and a Spanish connection
-error. Use `scripts/capture-screenshots.sh` with the list in `README.md`.
+Gmail real is now configured and syncing, so the real-mail captures can be
+taken on the workstation. They **must be redacted** (sender addresses, subjects,
+message content) before committing. Still pending: the final composer after the
+editor-tab pass, the first-run wizard with the neutral heading, and a Spanish
+connection error. Use `scripts/capture-screenshots.sh` with the list in
+`README.md`.
 
 The temporary test account, local GreenMail server, isolated profile and
 keyring entries were removed when the session was paused.
