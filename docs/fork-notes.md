@@ -60,12 +60,14 @@ cd ui && npm run check
   also passed to the CLI compile, so the Spanish pin survives `npm run check`
   and a restart. All three verification commands are green (logs in
   `docs/verification/`).
-- **Phase 3 — real mail and Spanish:** Spanish infrastructure and the requested
-  translated groups are in place (156 keys). Real Gmail verification is
-  **blocked on the app password** (see `docs/gmail-setup.md`); the app will be
-  configured on the workstation. The synthetic WIP captures are in
-  `docs/screenshots/`; final real-mail captures and the last composer/wizard
-  recapture are pending the first local launch. The capture script is ready.
+- **Phase 3 — real mail and Spanish:** Gmail was configured with an App Password
+  on 2026-10-22; the app authenticated to IMAP and synced the INBOX (9,032
+  messages). Spanish infrastructure and the requested translated groups are in
+  place (156 keys). The synthetic WIP captures are in `docs/screenshots/`; final
+  real-mail captures still need redaction and the last composer/wizard recapture
+  (the capture script is ready). OAuth2/XOAUTH2 remains the durable follow-up —
+  App Passwords are not available for every Google account, so it is still
+  future-proofing work, not a current blocker.
 
 ## Pending debt
 

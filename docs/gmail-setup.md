@@ -1,9 +1,11 @@
 # Gmail with an app password — setup and verification
 
-**Status: blocked on credentials.** The implementation and the UI are ready, but
-this fork's development session did not have a Gmail account or an app password.
-No credential was requested in chat and none is stored in this repository. This
-page is the exact procedure to finish Phase 3 on the workstation.
+**Status: configured and syncing (2026-10-22).** An App Password was configured
+successfully on the workstation; the app authenticated to `imap.gmail.com` and
+synced the Gmail INBOX (9,032 messages). No credential is stored in this
+repository. OAuth2/XOAUTH2 remains the durable follow-up because Google can
+withdraw App Passwords for accounts or Workspace domains that don't offer them.
+This page is the procedure and the verification checklist for the workstation.
 
 ## 1. Prepare the Google account
 
@@ -37,11 +39,12 @@ explicit trust. Compare the fingerprint before accepting it.
 
 ## 3. Verification checklist
 
-Run these in order and record the result:
+**Verified on 2026-10-22:** IMAP login and initial INBOX sync (9,032 messages).
+The remaining items are the manual acceptance pass on the workstation:
 
+- [x] Initial sync downloads envelopes and the inbox renders (9,032 messages).
 - [ ] Folder list shows Gmail's folders (`INBOX`, `[Gmail]/Sent Mail`,
       `[Gmail]/Drafts`, `[Gmail]/Trash`, `[Gmail]/Spam`, …).
-- [ ] Initial sync downloads envelopes and the inbox renders.
 - [ ] Search (FTS5) returns local results; advanced operators still work.
 - [ ] Open an HTML message. Remote images stay blocked by default; the
       "load images" affordance is the only way to fetch them.
