@@ -10,7 +10,7 @@ translated so the boundary does not drift silently.
 | Piece | File |
 |---|---|
 | Locale list | `ui/project.inlang/settings.json` (`"locales": ["en", "de", "es"]`) |
-| Catalogue | `ui/messages/es.json` (1121 keys, 156 translated) |
+| Catalogue | `ui/messages/es.json` (1140 keys, 175 translated) |
 | Language picker | `LOCALE_LABELS` in `ui/src/lib/AccountSettings.svelte` (`es: 'Español'`) |
 | Compiler | Paraglide JS, existing Vite plugin — no new dependency |
 
@@ -44,6 +44,9 @@ the same convention mainstream Spanish clients use.
      HTML-mail background, import/remove theme labels and the dark-only hint.
    - Account setup: steps, Back/Next/Finish/Skip/Add account/Saving, IMAP and
      SMTP labels/explainers, TLS-trust buttons and certificate explanation.
+   - OAuth2 wizard: Google/Microsoft sign-in card, client ID/secret labels,
+     connected state, provider hints and the "Microsoft requires OAuth2" error.
+   - Account settings: OAuth2 connected/no-password notice.
 3. **Composer**
    - Primary actions: Send, Sending…, Save, Attach, NC Files, Meetings/Citas.
    - Header, attachment-mention warning and its dismiss action.

@@ -40,6 +40,9 @@ pub enum PresetHint {
     /// The provider ships with remote mail access (IMAP/SMTP) turned
     /// off; the user must enable it in the provider's web settings.
     EnableRemoteAccess,
+    /// The provider requires OAuth2 / Modern Auth for IMAP/SMTP;
+    /// passwords and app passwords are no longer accepted.
+    Oauth,
 }
 
 /// One provider entry for the wizard pick-list.
@@ -140,7 +143,7 @@ pub fn all() -> Vec<ProviderPreset> {
             "smtp-mail.outlook.com",
             587,
             None,
-            Some(PresetHint::AppPassword),
+            Some(PresetHint::Oauth),
         ),
         preset(
             "icloud",

@@ -10,7 +10,6 @@ use unkai_core::models::Email;
 use unkai_core::models::EmailEnvelope;
 use unkai_core::models::Folder;
 use unkai_imap::ImapClient;
-use unkai_smtp::SmtpClient;
 use unkai_store::Cache;
 use unkai_store::SharedCache;
 use unkai_store::account_store;
@@ -30,8 +29,8 @@ use crate::notify::{MailFlagsUpdatedPayload, NewMailPayload};
 use crate::state::AppContext;
 use crate::state::{SettingsSyncNotify, SharedSettings};
 use crate::support::{
-    connect_imap, connect_jmap, load_account, load_nextcloud_account, pick_drafts_folder,
-    should_clean_cache_for_delete, uses_jmap,
+    connect_imap, connect_jmap, connect_smtp, load_account, load_nextcloud_account,
+    pick_drafts_folder, should_clean_cache_for_delete, uses_jmap,
 };
 
 /// Pin (or clear) a per-folder icon override for an account.
@@ -903,15 +902,7 @@ pub async fn respond_mdn_request(
         automatic,
     };
 
-    let password = credentials::get_imap_password(&account_id)?;
-    let smtp = SmtpClient::connect(
-        &account.smtp_host,
-        account.smtp_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await?;
+    let smtp = connect_smtp(&account).await?;
     smtp.send_mdn(&reply).await?;
 
     cache.set_mdn_handled(&account_id, &folder, uid, "sent")?;
@@ -1506,8 +1497,6 @@ pub async fn delete_message(
         _ => None,
     };
 
-    let password = credentials::get_imap_password(&account.id)?;
-
     // Drafts-folder cleanup (#193): if this is a draft and its
     // cached body carries Compose-stamped Nextcloud share
     // markers (`data-unkai-share-id` + `data-unkai-share-nc`
@@ -1557,14 +1546,7 @@ pub async fn delete_message(
         tracing::warn!("mark_message_pending(delete) failed: {e}");
     }
 
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {
@@ -1676,22 +1658,13 @@ pub async fn archive_message(
         return Ok(());
     }
 
-    let password = credentials::get_imap_password(&account.id)?;
-
     // Optimistic-UI tombstone (#174) — see `delete_message`.
     let pending = format!("move:{archive}");
     if let Err(e) = cache.mark_message_pending(&account_id, &folder, uid, &pending) {
         tracing::warn!("mark_message_pending(archive) failed: {e}");
     }
 
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {
@@ -1747,22 +1720,13 @@ pub async fn move_message(
         return Ok(());
     }
 
-    let password = credentials::get_imap_password(&account.id)?;
-
     // Optimistic-UI tombstone (#174) — see `delete_message`.
     let pending = format!("move:{dest_folder}");
     if let Err(e) = cache.mark_message_pending(&account_id, &folder, uid, &pending) {
         tracing::warn!("mark_message_pending(move) failed: {e}");
     }
 
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {
@@ -1824,8 +1788,6 @@ pub async fn move_messages(
         return Ok(vec![]); // move-to-self noop
     }
 
-    let password = credentials::get_imap_password(&account.id)?;
-
     // Optimistic-UI tombstones (#174) — see `delete_message` for
     // the lifecycle.  Marking each UID before the IMAP roundtrip
     // means a folder switch mid-batch won't briefly show the
@@ -1837,14 +1799,7 @@ pub async fn move_messages(
         }
     }
 
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {
@@ -1929,8 +1884,6 @@ pub async fn archive_messages(
         return Ok(vec![]);
     }
 
-    let password = credentials::get_imap_password(&account.id)?;
-
     // Optimistic-UI tombstones — same shape as the move-batch path,
     // marking each row pending before the IMAP round-trip means a
     // folder switch mid-batch won't briefly resurrect the archived
@@ -1942,14 +1895,7 @@ pub async fn archive_messages(
         }
     }
 
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {

@@ -63,16 +63,25 @@ cd ui && npm run check
 - **Phase 3 — real mail and Spanish:** Gmail was configured with an App Password
   on 2026-10-22; the app authenticated to IMAP and synced the INBOX (9,032
   messages). Spanish infrastructure and the requested translated groups are in
-  place (156 keys). The synthetic WIP captures are in `docs/screenshots/`; final
-  real-mail captures still need redaction and the last composer/wizard recapture
-  (the capture script is ready). OAuth2/XOAUTH2 remains the durable follow-up —
-  App Passwords are not available for every Google account, so it is still
-  future-proofing work, not a current blocker.
+  place (175 translated keys). The synthetic WIP captures are in
+  `docs/screenshots/`; final real-mail captures still need redaction and the
+  last composer/wizard recapture (the capture script is ready).
+- **Phase 3b — OAuth2 provider support:** Google and Microsoft OAuth2/XOAUTH2
+  are implemented (PKCE, loopback callback, keyring refresh tokens, IMAP/SMTP
+  XOAUTH2, provider presets, wizard UI and unit tests). Outlook.com/Hotmail
+  requires OAuth2, so this is the path for the upcoming Hotmail account. The
+  only manual step left is creating the user's own OAuth client and completing
+  the browser consent (see `docs/oauth-setup.md`).
 
 ## Pending debt
 
-1. **Gmail OAuth2 / XOAUTH2.** App passwords are a bootstrap; OAuth2 is the
-   durable path and avoids Google's app-password policy risk.
+1. **OAuth2 / XOAUTH2 — implemented, live consent pending.** Google and
+   Microsoft (Outlook.com/Hotmail/Microsoft 365) desktop OAuth flows, PKCE,
+   loopback callback, keyring token storage and XOAUTH2 IMAP/SMTP are in the
+   tree. App passwords remain a Gmail fallback. The remaining manual step is
+   creating the user's own Google Cloud / Microsoft Entra desktop client and
+   completing the browser consent on the workstation — see
+   [`docs/oauth-setup.md`](oauth-setup.md).
 2. **Full Spanish translation.** The remaining views/settings stay English by
    design; see `docs/spanish-i18n.md` for the boundary.
 3. **Code signing.** No Windows/macOS signing or Linux repository packaging in

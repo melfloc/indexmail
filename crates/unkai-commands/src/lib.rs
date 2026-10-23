@@ -46,6 +46,7 @@ pub mod background;
 pub mod crypto_bridge;
 pub mod geocode;
 pub mod notify;
+pub mod oauth;
 pub mod state;
 pub mod support;
 

@@ -196,6 +196,25 @@
   // failures so the template's single error slot shows both.
   const accounts = $derived(accountsStore.list)
   const loading = $derived(accountsStore.loading)
+
+  // OAuth2 accounts have no password to edit; show their provider
+  // instead of the password field. The status comes from the keychain.
+  let oauthStatuses = $state<Record<string, api.accounts.OAuthStatus | null>>({})
+  const oauthChecked = new Set<string>()
+  $effect(() => {
+    for (const account of accounts) {
+      if (oauthChecked.has(account.id)) continue
+      oauthChecked.add(account.id)
+      void api.accounts
+        .oauthStatus({ accountId: account.id })
+        .then((status) => {
+          oauthStatuses[account.id] = status
+        })
+        .catch((e) => {
+          console.warn('oauth_status failed', e)
+        })
+    }
+  })
   let mutationError = $state('')
   const error = $derived(mutationError || accountsStore.error)
 
@@ -2585,6 +2604,7 @@
   {@const acc = serverEditAccount}
   {@const draft = serverDrafts[acc.id]}
   {@const sStatus = serverSaveStatus[acc.id]}
+  {@const oauth = oauthStatuses[acc.id]}
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
     role="dialog"
@@ -2650,19 +2670,34 @@
             class="input w-full text-sm px-3 py-2 rounded-lg mt-1"
           />
         </label>
-        <label class="block col-span-2">
-          <span class="text-xs text-surface-500">Password</span>
-          <PasswordInput
-            autocomplete="new-password"
-            placeholder="Leave empty to keep current password"
-            bind:value={passwordDrafts[acc.id]}
-            class="mt-1"
-            inputClass="text-sm px-3 py-2 rounded-lg"
-          />
-          <span class="block text-xs text-surface-400 mt-1">
-            When set, replaces the password stored in your OS keychain. Takes effect on the next IMAP/SMTP connection.
-          </span>
-        </label>
+        {#if oauth}
+          <div class="col-span-2 rounded-lg border border-success-500/30 bg-success-500/5 p-3">
+            <p class="text-sm font-medium flex items-center gap-2 text-success-500">
+              <Icon name="lock" size={16} />
+              {m.settings_account_oauth_connected({
+                provider: oauth.provider === 'google' ? 'Google' : 'Microsoft',
+              })}
+            </p>
+            <p class="text-xs text-surface-500 mt-1">{oauth.email}</p>
+            <p class="text-xs text-surface-400 mt-1">
+              {m.settings_account_oauth_no_password()}
+            </p>
+          </div>
+        {:else}
+          <label class="block col-span-2">
+            <span class="text-xs text-surface-500">Password</span>
+            <PasswordInput
+              autocomplete="new-password"
+              placeholder="Leave empty to keep current password"
+              bind:value={passwordDrafts[acc.id]}
+              class="mt-1"
+              inputClass="text-sm px-3 py-2 rounded-lg"
+            />
+            <span class="block text-xs text-surface-400 mt-1">
+              When set, replaces the password stored in your OS keychain. Takes effect on the next IMAP/SMTP connection.
+            </span>
+          </label>
+        {/if}
       </div>
 
       <div class="flex justify-end gap-2 pt-2 border-t border-surface-200 dark:border-surface-700">

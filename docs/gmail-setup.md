@@ -7,6 +7,12 @@ repository. OAuth2/XOAUTH2 remains the durable follow-up because Google can
 withdraw App Passwords for accounts or Workspace domains that don't offer them.
 This page is the procedure and the verification checklist for the workstation.
 
+> **OAuth2 is the durable alternative.** Index Mail supports Google
+> OAuth2/XOAUTH2 for accounts where App Passwords are unavailable or
+> undesirable. The setup (a desktop OAuth client in Google Cloud, then
+> "Sign in with Google" in the wizard) is in
+> [`docs/oauth-setup.md`](oauth-setup.md).
+
 ## 1. Prepare the Google account
 
 1. Enable **2-Step Verification** on the Google account. App passwords are not

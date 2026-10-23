@@ -16,7 +16,19 @@ import type {
   TrustedCert,
 } from './types'
 
-export function addAccount(args: { account: Account; password: string }): Promise<void> {
+export type OAuthProvider = 'google' | 'microsoft'
+
+export interface OAuthStatus {
+  provider: OAuthProvider
+  email: string
+  scope: string
+  connected_at?: string | null
+}
+
+export function addAccount(args: {
+  account: Account
+  password?: string | null
+}): Promise<void> {
   return call('add_account', args)
 }
 
@@ -58,6 +70,29 @@ export function testConnection(args: {
   trustedCerts?: TrustedCert[] | null
 }): Promise<string> {
   return call('test_connection', args)
+}
+
+export function oauthAuthorize(args: {
+  provider: OAuthProvider
+  accountId: string
+  clientId: string
+  clientSecret: string
+  email: string
+  imapHost: string
+  imapPort: number
+  smtpHost: string
+  smtpPort: number
+  trustedCerts?: TrustedCert[] | null
+}): Promise<void> {
+  return call('oauth_authorize', args)
+}
+
+export function oauthStatus(args: { accountId: string }): Promise<OAuthStatus | null> {
+  return call('oauth_status', args)
+}
+
+export function oauthDisconnect(args: { accountId: string }): Promise<void> {
+  return call('oauth_disconnect', args)
 }
 
 export function testJmapConnection(args: {

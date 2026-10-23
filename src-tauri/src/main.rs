@@ -944,7 +944,7 @@ fn open_default_apps_settings() -> Result<(), UnkaiError> {
 #[tauri::command]
 fn add_account(
     account: Account,
-    password: String,
+    password: Option<String>,
     window: tauri::Window,
     reg: State<'_, ProfileRegistry>,
 ) -> Result<(), UnkaiError> {
@@ -3602,6 +3602,45 @@ async fn test_connection(
 }
 
 #[tauri::command]
+#[allow(clippy::too_many_arguments)]
+async fn oauth_authorize(
+    provider: cmds::oauth::OAuthProvider,
+    account_id: String,
+    client_id: String,
+    client_secret: String,
+    email: String,
+    imap_host: String,
+    imap_port: u16,
+    smtp_host: String,
+    smtp_port: u16,
+    trusted_certs: Option<Vec<unkai_core::models::TrustedCert>>,
+) -> Result<(), UnkaiError> {
+    cmds::accounts::oauth_authorize(
+        provider,
+        account_id,
+        client_id,
+        client_secret,
+        email,
+        imap_host,
+        imap_port,
+        smtp_host,
+        smtp_port,
+        trusted_certs,
+    )
+    .await
+}
+
+#[tauri::command]
+fn oauth_status(account_id: String) -> Result<Option<cmds::oauth::OAuthStatus>, UnkaiError> {
+    cmds::accounts::oauth_status(account_id)
+}
+
+#[tauri::command]
+fn oauth_disconnect(account_id: String) -> Result<(), UnkaiError> {
+    cmds::accounts::oauth_disconnect(account_id)
+}
+
+#[tauri::command]
 async fn test_jmap_connection(
     jmap_url: String,
     username: String,
@@ -4451,6 +4490,9 @@ fn main() {
             add_local_dav_account,
             probe_server_certificate,
             test_connection,
+            oauth_authorize,
+            oauth_status,
+            oauth_disconnect,
             fetch_envelopes,
             fetch_unified_envelopes,
             fetch_unified_special_envelopes,

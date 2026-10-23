@@ -5,9 +5,7 @@
 use unkai_core::UnkaiError;
 use unkai_core::models::Account;
 use unkai_core::models::OutgoingEmail;
-use unkai_imap::ImapClient;
 use unkai_jmap::JmapClient;
-use unkai_smtp::SmtpClient;
 use unkai_smtp::build_outgoing_message;
 use unkai_store::Cache;
 use unkai_store::credentials;
@@ -18,7 +16,8 @@ use crate::notify::OutboxUpdatedPayload;
 use crate::notify::UiNotifier;
 use crate::state::AppContext;
 use crate::support::{
-    connect_jmap, load_account, pick_drafts_folder, should_clean_cache_for_delete, uses_jmap,
+    connect_imap, connect_jmap, connect_smtp, load_account, pick_drafts_folder,
+    should_clean_cache_for_delete, uses_jmap,
 };
 
 // ── SMTP commands ───────────────────────────────────────────────
@@ -414,15 +413,7 @@ pub async fn run_send_pipeline(
     let message = build_outgoing_message(email)?;
     let raw = message.formatted();
 
-    let password = credentials::get_imap_password(&account.id)?;
-    let smtp = SmtpClient::connect(
-        &account.smtp_host,
-        account.smtp_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await?;
+    let smtp = connect_smtp(account).await?;
     let mode = email.encryption_mode.as_deref();
     let smime_active = mode == Some("smime") || mode == Some("smime-sign");
     // PGP keeps its historical trigger (`encryption_mode == "pgp"` or the
@@ -701,22 +692,7 @@ pub async fn mark_original_answered_imap(account: &Account, cache: &Cache, rt: &
         );
     }
 
-    let password = match credentials::get_imap_password(&account.id) {
-        Ok(p) => p,
-        Err(e) => {
-            tracing::warn!("answered-flag IMAP STORE skipped — keychain lookup failed: {e}");
-            return;
-        }
-    };
-    let mut client = match ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await
-    {
+    let mut client = match connect_imap(account).await {
         Ok(c) => c,
         Err(e) => {
             tracing::warn!("answered-flag IMAP STORE skipped — connect failed: {e}");
@@ -774,15 +750,7 @@ pub async fn append_to_sent(
         ));
     };
 
-    let password = credentials::get_imap_password(&account.id)?;
-    let mut client = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await?;
+    let mut client = connect_imap(account).await?;
     let result = client.append_message(&sent, raw, &["\\Seen"]).await;
     let _ = client.logout().await;
     result
@@ -902,15 +870,7 @@ pub async fn save_draft(
         tracing::warn!("save_draft upsert_message_pending(delete) failed: {e}");
     }
 
-    let password = credentials::get_imap_password(&account.id)?;
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {
@@ -1110,15 +1070,7 @@ pub async fn expunge_draft_after_send(
         tracing::warn!("expunge_draft_after_send upsert_message_pending failed: {e}");
     }
 
-    let password = credentials::get_imap_password(&account.id)?;
-    let connect_result = ImapClient::connect(
-        &account.imap_host,
-        account.imap_port,
-        &account.email,
-        &password,
-        &account.trusted_certs,
-    )
-    .await;
+    let connect_result = connect_imap(&account).await;
     let mut client = match connect_result {
         Ok(c) => c,
         Err(e) => {
