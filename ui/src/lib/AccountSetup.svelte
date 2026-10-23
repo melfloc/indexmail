@@ -76,6 +76,16 @@
   let personName = $state('')
   let email = $state('')
   let password = $state('')     // stored in the OS keychain, never on disk
+  // OAuth2 state for Gmail / Outlook.com. The refresh token lives in
+  // the OS keychain under this account id; the client id/secret are
+  // the user's own developer-console app credentials (never committed).
+  let oauthClientId = $state('')
+  let oauthClientSecret = $state('')
+  let oauthBusy = $state(false)
+  let oauthError = $state('')
+  let oauthConnected = $state(false)
+  type OAuthProviderId = 'google' | 'microsoft'
+  const accountId = crypto.randomUUID()
   let imapHost = $state('')
   let imapPort = $state(993)    // 993 = standard IMAP-over-TLS port
   let smtpHost = $state('')
@@ -104,7 +114,7 @@
     smtp_port: number
     smtp_tls: boolean
     jmap_url: string | null
-    hint: 'app-password' | 'enable-remote-access' | null
+    hint: 'app-password' | 'enable-remote-access' | 'oauth' | null
   }
   let presets = $state<ProviderPreset[]>([])
   // 'auto' = no preset picked; run network discovery on email blur.
@@ -115,6 +125,29 @@
   let presetAutoApplied = $state(false)
   const activePreset = $derived(
     presets.find((p) => p.id === selectedPresetId) ?? null,
+  )
+
+  /** Which OAuth2 provider this address needs, if any. Gmail and
+   *  Outlook/Hotmail/Microsoft 365 are the two providers whose IMAP
+   *  endpoints no longer accept a normal password for many accounts. */
+  const oauthProvider = $derived<OAuthProviderId | null>(
+    activePreset?.id === 'gmail' ||
+      ['gmail.com', 'googlemail.com'].includes(
+        email.split('@')[1]?.toLowerCase() ?? '',
+      )
+      ? 'google'
+      : activePreset?.id === 'outlook' ||
+          [
+            'outlook.com',
+            'outlook.de',
+            'hotmail.com',
+            'hotmail.de',
+            'live.com',
+            'live.de',
+            'msn.com',
+          ].includes(email.split('@')[1]?.toLowerCase() ?? '')
+        ? 'microsoft'
+        : null,
   )
 
   $effect(() => {
@@ -130,6 +163,10 @@
   function applyPreset(id: string, auto = false) {
     selectedPresetId = id
     presetAutoApplied = auto
+    // A different provider means a different OAuth identity; never
+    // carry an already-connected session into the new setup.
+    oauthConnected = false
+    oauthError = ''
     if (id === 'auto') {
       discoveryHint = null
       return
@@ -575,31 +612,80 @@
     pendingCert = null
   }
 
+  /** Fill the provider's canonical endpoints when discovery/preset
+   *  left them empty, so the OAuth probe tests the real servers. */
+  function ensureOAuthMailHosts() {
+    if (!imapHost.trim()) {
+      imapHost = oauthProvider === 'google' ? 'imap.gmail.com' : 'outlook.office365.com'
+    }
+    if (!imapPort) imapPort = 993
+    if (!smtpHost.trim()) {
+      smtpHost = oauthProvider === 'google' ? 'smtp.gmail.com' : 'smtp-mail.outlook.com'
+    }
+    if (!smtpPort) smtpPort = oauthProvider === 'google' ? 465 : 587
+  }
+
+  /** Open the provider's browser sign-in and store the refresh token
+   *  in the OS keychain. The backend also tests IMAP + SMTP before
+   *  this resolves, so a successful return means mail actually works. */
+  async function signInWithOAuth() {
+    if (!oauthProvider || oauthBusy) return
+    oauthError = ''
+    if (!oauthClientId.trim()) {
+      oauthError = m.account_setup_oauth_client_id_required()
+      return
+    }
+    if (oauthProvider === 'google' && !oauthClientSecret.trim()) {
+      oauthError = m.account_setup_oauth_client_secret_required()
+      return
+    }
+    ensureOAuthMailHosts()
+    oauthBusy = true
+    try {
+      await api.accounts.oauthAuthorize({
+        provider: oauthProvider,
+        accountId,
+        clientId: oauthClientId.trim(),
+        clientSecret: oauthClientSecret.trim(),
+        email: email.trim(),
+        imapHost: imapHost.trim(),
+        imapPort,
+        smtpHost: smtpHost.trim(),
+        smtpPort,
+        trustedCerts: trustedCerts.length > 0 ? trustedCerts : null,
+      })
+      oauthConnected = true
+    } catch (e) {
+      oauthError = formatError(e) || m.account_setup_oauth_failed()
+    } finally {
+      oauthBusy = false
+    }
+  }
+
   // ── Submit ──────────────────────────────────────────────────
   async function submit() {
     error = ''
+    if (oauthProvider === 'microsoft' && !oauthConnected) {
+      error = m.account_setup_oauth_required_microsoft()
+      return
+    }
     saving = true
 
     try {
-      // Probe the IMAP server with the entered credentials *before*
-      // persisting anything. This turns "saved a bad account and
-      // everything breaks silently on first fetch" into a clear,
-      // immediate error the user can act on (wrong host, wrong port,
-      // TLS failure, bad password — all surface here). `trustedCerts`
-      // grows when the user accepts a self-signed cert via the
-      // prompt below, so the same probe will pass on the retry.
-      await api.accounts.testConnection({
-        host: imapHost.trim(),
-        port: imapPort,
-        username: email.trim(),
-        password,
-        trustedCerts: trustedCerts.length > 0 ? trustedCerts : null,
-      })
+      // OAuth2 accounts were already probed by the sign-in command
+      // (it tests both IMAP and SMTP). Password accounts still get the
+      // pre-save connection probe here.
+      if (!oauthConnected) {
+        await api.accounts.testConnection({
+          host: imapHost.trim(),
+          port: imapPort,
+          username: email.trim(),
+          password,
+          trustedCerts: trustedCerts.length > 0 ? trustedCerts : null,
+        })
+      }
 
-      // Generate a simple unique ID for this account.
-      // crypto.randomUUID() is available in all modern browsers
-      // (and Tauri's webview).
-      const id = crypto.randomUUID()
+      const id = accountId
 
       // Call the Rust backend to save this account. The password is
       // handed over as a separate argument so the Rust side can stash
@@ -622,7 +708,7 @@
           // user accepted each cert, so it ships through unchanged.
           trusted_certs: trustedCerts,
         },
-        password,
+        password: oauthConnected ? null : password,
       })
 
       // Success! The mail account exists now — move on to the
@@ -792,7 +878,7 @@
                 placeholder={m.account_setup_email_placeholder()}
                 class="input w-full pl-8 pr-3 py-2 rounded-lg"
                 onblur={autoFillServers}
-                disabled={discovering}
+                disabled={discovering || oauthConnected}
               />
             </div>
             {#if discovering}
@@ -819,6 +905,7 @@
               class="select w-full mt-1 px-3 py-2 text-sm rounded-lg"
               bind:value={selectedPresetId}
               onchange={() => applyPreset(selectedPresetId)}
+              disabled={oauthConnected}
             >
               <option value="auto">{m.account_setup_provider_auto()}</option>
               {#each presets as p (p.id)}
@@ -847,6 +934,80 @@
               <span>{m.account_setup_provider_hint_enable_remote_access({ provider: activePreset.display_name })}</span>
             </div>
           {/if}
+          {#if activePreset?.hint === 'oauth'}
+            <div class="text-xs text-surface-600 dark:text-surface-400 mb-4 p-3 rounded-lg border border-warning-500/40 bg-warning-500/5 flex items-start gap-2">
+              <span class="mt-0.5"><Icon name="lock" size={14} /></span>
+              <span>{m.account_setup_provider_hint_oauth({ provider: activePreset.display_name })}</span>
+            </div>
+          {/if}
+          {#if oauthProvider}
+            <div class="mb-4 p-4 rounded-lg border border-primary-500/30 bg-primary-500/5">
+              <p class="text-sm font-medium mb-1 flex items-center gap-2">
+                <Icon name="lock" size={16} />
+                {oauthProvider === 'google'
+                  ? m.account_setup_oauth_title_google()
+                  : m.account_setup_oauth_title_microsoft()}
+              </p>
+              <p class="text-xs text-surface-500 mb-3">
+                {oauthProvider === 'google'
+                  ? m.account_setup_oauth_explainer_google()
+                  : m.account_setup_oauth_explainer_microsoft()}
+              </p>
+              {#if oauthConnected}
+                <div class="inline-flex items-center gap-2 text-sm text-success-500">
+                  <Icon name="success" size={16} />
+                  <span>{m.account_setup_oauth_connected({ email })}</span>
+                </div>
+              {:else}
+                <label class="block mb-3">
+                  <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
+                    {m.account_setup_oauth_client_id_label()}
+                  </span>
+                  <input
+                    class="input w-full mt-1 px-3 py-2 rounded-lg"
+                    bind:value={oauthClientId}
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </label>
+                <label class="block mb-3">
+                  <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
+                    {m.account_setup_oauth_client_secret_label()}
+                  </span>
+                  <PasswordInput
+                    bind:value={oauthClientSecret}
+                    class="mt-1"
+                    inputClass="px-3 py-2 rounded-lg"
+                    autocomplete="off"
+                  />
+                  {#if oauthProvider === 'microsoft'}
+                    <span class="block text-xs text-surface-500 mt-1">
+                      {m.account_setup_oauth_client_secret_optional()}
+                    </span>
+                  {/if}
+                </label>
+                {#if oauthError}
+                  <p class="text-xs text-error-500 mb-3 wrap-break-word">{oauthError}</p>
+                {/if}
+                <button
+                  type="button"
+                  class="btn btn-sm preset-filled-primary-500 inline-flex items-center gap-2"
+                  disabled={oauthBusy}
+                  onclick={() => void signInWithOAuth()}
+                >
+                  <Icon name={oauthBusy ? 'loading' : 'lock'} size={14} />
+                  {oauthBusy
+                    ? m.account_setup_oauth_signing_in()
+                    : oauthProvider === 'google'
+                      ? m.account_setup_oauth_button_google()
+                      : m.account_setup_oauth_button_microsoft()}
+                </button>
+                <p class="text-xs text-surface-500 mt-2">
+                  {m.account_setup_oauth_howto_hint()}
+                </p>
+              {/if}
+            </div>
+          {/if}
           <label class="block mb-4">
             <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{m.account_setup_imap_server_label()}</span>
             <div class="relative mt-1">
@@ -858,6 +1019,7 @@
                 bind:value={imapHost}
                 placeholder={m.account_setup_imap_server_placeholder()}
                 class="input w-full pl-8 pr-3 py-2 rounded-lg"
+                disabled={oauthConnected}
               />
             </div>
           </label>
@@ -867,30 +1029,33 @@
               type="number"
               bind:value={imapPort}
               class="input w-full mt-1 px-3 py-2 rounded-lg"
+              disabled={oauthConnected}
             />
           </label>
-          <label class="block mb-4">
-            <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{m.account_setup_password_label()}</span>
-            <PasswordInput
-              bind:value={password}
-              placeholder={m.account_setup_password_placeholder()}
-              class="mt-1"
-              inputClass="pl-8 py-2 rounded-lg"
-              autocomplete="current-password"
-            >
-              <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none flex items-center" aria-hidden="true">
-                <Icon name="lock" size={14} />
+          {#if !oauthConnected && oauthProvider !== 'microsoft'}
+            <label class="block mb-4">
+              <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{m.account_setup_password_label()}</span>
+              <PasswordInput
+                bind:value={password}
+                placeholder={m.account_setup_password_placeholder()}
+                class="mt-1"
+                inputClass="pl-8 py-2 rounded-lg"
+                autocomplete="current-password"
+              >
+                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-surface-400 pointer-events-none flex items-center" aria-hidden="true">
+                  <Icon name="lock" size={14} />
+                </span>
+              </PasswordInput>
+              <span class="block text-xs text-surface-500 mt-1">
+                {m.account_setup_password_hint()}
               </span>
-            </PasswordInput>
-            <span class="block text-xs text-surface-500 mt-1">
-              {m.account_setup_password_hint()}
-            </span>
-            {#if activePreset?.hint === 'app-password'}
-              <span class="block text-xs text-warning-600 dark:text-warning-400 mt-1">
-                {m.account_setup_provider_hint_app_password({ provider: activePreset.display_name })}
-              </span>
-            {/if}
-          </label>
+              {#if activePreset?.hint === 'app-password'}
+                <span class="block text-xs text-warning-600 dark:text-warning-400 mt-1">
+                  {m.account_setup_provider_hint_app_password({ provider: activePreset.display_name })}
+                </span>
+              {/if}
+            </label>
+          {/if}
         </div>
 
       <!-- Step 2: SMTP settings -->
@@ -910,6 +1075,7 @@
                 bind:value={smtpHost}
                 placeholder={m.account_setup_smtp_server_placeholder()}
                 class="input w-full pl-8 pr-3 py-2 rounded-lg"
+                disabled={oauthConnected}
               />
             </div>
           </label>
@@ -919,6 +1085,7 @@
               type="number"
               bind:value={smtpPort}
               class="input w-full mt-1 px-3 py-2 rounded-lg"
+              disabled={oauthConnected}
             />
           </label>
 
