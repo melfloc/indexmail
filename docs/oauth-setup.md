@@ -68,6 +68,30 @@ fallback. OAuth2 is the more durable option.
 Microsoft no longer accepts account passwords or app passwords for
 Outlook.com/Hotmail IMAP/SMTP. OAuth2 is the only supported path.
 
+## One client, all accounts (the normal mail-client model)
+
+Thunderbird, K-9 Mail, FairEmail and Mailspring don't ask users to register an
+OAuth app per account: the application owns one client and every account just
+opens the provider's browser consent. Index Mail now supports the same model:
+
+- The first OAuth account asks for the client ID/secret once. Leave
+  **Remember this client for all accounts** checked.
+- The client is stored in the OS keyring under `unkai-mail-oauth-app`. The next
+  account shows **Using the OAuth client saved for this installation** and only
+  needs **Sign in with Google/Microsoft** — no fields to fill.
+- **Use a different OAuth client** reveals the fields again if you rotate or
+  replace the app registration. Existing accounts keep the client that issued
+  their refresh token; only new sign-ins use the new one.
+- This is a per-installation client, not a per-account one. You do not need a
+  separate Google Cloud project or Entra registration for every mailbox.
+
+For a distributed build, the fork owner can bake their own client into the
+application (Microsoft's public client ID; Google's desktop client ID/secret
+injected at build time, not committed). Users then only see the provider's
+sign-in button. Google's policy prohibits committing client credentials to a
+public repository and public distribution may require verification/CASA;
+Microsoft personal accounts use a public client with no secret.
+
 ## Where the credentials live
 
 - The **refresh token** and the OAuth client configuration are stored in the
