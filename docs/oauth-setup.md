@@ -1,0 +1,97 @@
+# OAuth2 setup for Gmail and Outlook/Hotmail
+
+Gmail and Microsoft have retired password-based IMAP/SMTP for many
+accounts. Index Mail now supports **OAuth2 + SASL XOAUTH2** for both
+providers. The app opens your system browser, you approve access, and the
+long-lived refresh token is stored in the OS keyring. Your Google/Microsoft
+password never reaches the app.
+
+You only need to create a **desktop OAuth client** once per provider. The
+client ID/secret are app credentials from your own developer console, not your
+mail password, and they are stored in the keyring alongside the refresh token.
+Nothing is committed to this repository.
+
+## Google (Gmail)
+
+1. Open <https://console.cloud.google.com/> and create a project (e.g.
+   `Index Mail`).
+2. **APIs & Services → Library → Gmail API → Enable**.
+3. **APIs & Services → OAuth consent screen** (newer console: *Google Auth
+   Platform*):
+   - User type: **External**.
+   - Fill the app name and support email.
+   - **Audience → Test users**: add the Gmail address you will connect.
+   - **Data access → Add or remove scopes**: add
+     `https://mail.google.com/` (the scope required by Gmail IMAP/SMTP).
+   - Save.
+4. **Publish the app to Production** (*Audience → Publish app*). This matters:
+   apps left in **Testing** get refresh tokens that expire after **7 days**.
+   Production unverified is fine for a personal/single-user app; Google shows
+   an "unverified app" warning that you can dismiss with *Advanced → Continue*.
+   For wide distribution, Google requires verification (and a CASA security
+   assessment for restricted Gmail scopes).
+5. **APIs & Services → Credentials → Create credentials → OAuth client ID**:
+   - Application type: **Desktop app**.
+   - Copy the **client ID** and **client secret**.
+6. In Index Mail: add the Gmail account. On the *Incoming mail* step, the
+   Google OAuth card appears. Paste the client ID and secret and click
+   **Sign in with Google**. The wizard tests IMAP and SMTP before saving.
+
+If your account still offers an App Password, the password field remains a
+fallback. OAuth2 is the more durable option.
+
+## Microsoft (Outlook.com / Hotmail / Microsoft 365)
+
+1. Open <https://entra.microsoft.com/> → **App registrations → New
+   registration**.
+2. Supported account types: **Accounts in any organizational directory and
+   personal Microsoft accounts** (this covers personal Hotmail/Outlook and
+   work/school Microsoft 365).
+3. Redirect URI: platform **Mobile and desktop applications**, value
+   `http://localhost`. The app supplies a random loopback port at runtime;
+   Microsoft ignores the port for this desktop redirect.
+4. **Authentication → Allow public client flows: Yes**.
+5. **API permissions → Add a permission → APIs my organization uses**:
+   - **Office 365 Exchange Online → Delegated permissions**:
+     `IMAP.AccessAsUser.All`, `SMTP.Send`.
+   - **Microsoft Graph → Delegated permissions**: `offline_access`,
+     `openid`, `profile`, `email` (usually already present).
+   - For a work/school tenant, an administrator may need to grant consent.
+6. **Overview → Application (client) ID**: copy it. A public client does
+   **not** need a client secret; leave the secret field empty in the app.
+7. In Outlook.com: **Settings → Mail → Forwarding and IMAP** → enable
+   **Let devices and apps use IMAP**, then save.
+8. In Index Mail: add the Hotmail/Outlook account. On the *Incoming mail*
+   step, the Microsoft OAuth card appears. Paste the client ID and click
+   **Sign in with Microsoft**. The client secret can stay empty.
+
+Microsoft no longer accepts account passwords or app passwords for
+Outlook.com/Hotmail IMAP/SMTP. OAuth2 is the only supported path.
+
+## Where the credentials live
+
+- The **refresh token** and the OAuth client configuration are stored in the
+  OS keyring under the service `unkai-mail-oauth`, keyed by the account UUID.
+- Access tokens are kept in memory and refreshed shortly before expiry.
+- `accounts.json` / the encrypted account table never contains the token.
+- Revoke access at any time:
+  - Google: <https://myaccount.google.com/permissions>
+  - Microsoft: <https://account.live.com/consent/Manage>
+- If a refresh token is revoked, remove and re-add the account (or reconnect
+  through the provider's consent page).
+
+## Current limitations
+
+- **Live consent is intentionally not automated in CI.** The code and local
+  callback/token tests are in the repository; the real Google/Microsoft
+  browser approval is a manual step on the workstation.
+- **Google verification:** publishing unverified works for personal use but
+  shows a warning. Public distribution needs Google verification/CASA.
+- **Microsoft work/school:** the tenant must allow IMAP/SMTP and may require
+  admin consent; personal Hotmail/Outlook works with the public-client setup
+  above.
+- **MCP:** the optional local MCP mail tools still use the password path;
+  OAuth2 accounts are fully supported by the desktop mail client, not yet by
+  the MCP bridge.
+- **Code signing, full Spanish translation and a signed installer remain
+  separate release work.**
