@@ -1138,5 +1138,10 @@
   "account_setup_oauth_howto_hint": "The app opens your browser. Tokens are stored in the OS keyring; your Google/Microsoft password never reaches the app.",
   "account_setup_provider_hint_oauth": "{provider} requires OAuth2 sign-in. Use the button below; passwords and app passwords no longer work.",
   "settings_account_oauth_connected": "Connected with {provider}",
-  "settings_account_oauth_no_password": "This account signs in through OAuth2; there is no password to edit here. If the refresh token is revoked, remove and re-add the account."
+  "settings_account_oauth_no_password": "This account signs in through OAuth2; there is no password to edit here. If the refresh token is revoked, remove and re-add the account.",
+  "account_setup_oauth_saved_client": "Using the OAuth client saved for this installation",
+  "account_setup_oauth_saved_client_id": "Client ID ending {suffix}",
+  "account_setup_oauth_use_other": "Use a different OAuth client",
+  "account_setup_oauth_remember": "Remember this client for all accounts on this installation",
+  "account_setup_oauth_checking_saved": "Checking the saved OAuth client…"
 }

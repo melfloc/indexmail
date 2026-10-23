@@ -84,6 +84,10 @@
   let oauthBusy = $state(false)
   let oauthError = $state('')
   let oauthConnected = $state(false)
+  let oauthSavedClient = $state<api.accounts.OAuthAppStatus | null>(null)
+  let oauthUseSaved = $state(true)
+  let oauthRemember = $state(true)
+  let oauthConfigLoading = $state(false)
   type OAuthProviderId = 'google' | 'microsoft'
   const accountId = crypto.randomUUID()
   let imapHost = $state('')
@@ -149,6 +153,37 @@
         ? 'microsoft'
         : null,
   )
+
+  // One OAuth client per provider is saved in the OS keyring. A normal
+  // mail client ships that client; here the first account configures it
+  // once and every later account only needs the browser sign-in.
+  $effect(() => {
+    const provider = oauthProvider
+    let cancelled = false
+    oauthSavedClient = null
+    oauthUseSaved = true
+    oauthConfigLoading = false
+    if (!provider) return
+    oauthConfigLoading = true
+    void api.accounts
+      .oauthAppStatus({ provider })
+      .then((saved) => {
+        if (cancelled) return
+        oauthSavedClient = saved
+        // A Google desktop client needs its non-confidential secret;
+        // never claim a saved client is usable if it has none.
+        oauthUseSaved = !!saved && (provider !== 'google' || saved.has_secret)
+      })
+      .catch((e) => {
+        if (!cancelled) console.warn('oauth_app_status failed', e)
+      })
+      .finally(() => {
+        if (!cancelled) oauthConfigLoading = false
+      })
+    return () => {
+      cancelled = true
+    }
+  })
 
   $effect(() => {
     api.accounts.listProviderPresets()
@@ -631,11 +666,12 @@
   async function signInWithOAuth() {
     if (!oauthProvider || oauthBusy) return
     oauthError = ''
-    if (!oauthClientId.trim()) {
+    const useSaved = !!oauthSavedClient && oauthUseSaved
+    if (!useSaved && !oauthClientId.trim()) {
       oauthError = m.account_setup_oauth_client_id_required()
       return
     }
-    if (oauthProvider === 'google' && !oauthClientSecret.trim()) {
+    if (!useSaved && oauthProvider === 'google' && !oauthClientSecret.trim()) {
       oauthError = m.account_setup_oauth_client_secret_required()
       return
     }
@@ -645,16 +681,26 @@
       await api.accounts.oauthAuthorize({
         provider: oauthProvider,
         accountId,
-        clientId: oauthClientId.trim(),
-        clientSecret: oauthClientSecret.trim(),
+        // Empty fields tell the backend to use the client already
+        // saved in the OS keyring for this installation.
+        clientId: useSaved ? '' : oauthClientId.trim(),
+        clientSecret: useSaved ? '' : oauthClientSecret.trim(),
         email: email.trim(),
         imapHost: imapHost.trim(),
         imapPort,
         smtpHost: smtpHost.trim(),
         smtpPort,
         trustedCerts: trustedCerts.length > 0 ? trustedCerts : null,
+        rememberClient: useSaved ? false : oauthRemember,
       })
       oauthConnected = true
+      if (!useSaved && oauthRemember) {
+        oauthSavedClient = {
+          client_id: oauthClientId.trim(),
+          has_secret: !!oauthClientSecret.trim(),
+        }
+        oauthUseSaved = true
+      }
     } catch (e) {
       oauthError = formatError(e) || m.account_setup_oauth_failed()
     } finally {
@@ -948,44 +994,70 @@
                   ? m.account_setup_oauth_title_google()
                   : m.account_setup_oauth_title_microsoft()}
               </p>
-              <p class="text-xs text-surface-500 mb-3">
-                {oauthProvider === 'google'
-                  ? m.account_setup_oauth_explainer_google()
-                  : m.account_setup_oauth_explainer_microsoft()}
-              </p>
+              {#if !(oauthSavedClient && oauthUseSaved)}
+                <p class="text-xs text-surface-500 mb-3">
+                  {oauthProvider === 'google'
+                    ? m.account_setup_oauth_explainer_google()
+                    : m.account_setup_oauth_explainer_microsoft()}
+                </p>
+              {/if}
               {#if oauthConnected}
                 <div class="inline-flex items-center gap-2 text-sm text-success-500">
                   <Icon name="success" size={16} />
                   <span>{m.account_setup_oauth_connected({ email })}</span>
                 </div>
+              {:else if oauthConfigLoading}
+                <p class="text-xs text-surface-500">{m.account_setup_oauth_checking_saved()}</p>
               {:else}
-                <label class="block mb-3">
-                  <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                    {m.account_setup_oauth_client_id_label()}
-                  </span>
-                  <input
-                    class="input w-full mt-1 px-3 py-2 rounded-lg"
-                    bind:value={oauthClientId}
-                    autocomplete="off"
-                    spellcheck="false"
-                  />
-                </label>
-                <label class="block mb-3">
-                  <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                    {m.account_setup_oauth_client_secret_label()}
-                  </span>
-                  <PasswordInput
-                    bind:value={oauthClientSecret}
-                    class="mt-1"
-                    inputClass="px-3 py-2 rounded-lg"
-                    autocomplete="off"
-                  />
-                  {#if oauthProvider === 'microsoft'}
-                    <span class="block text-xs text-surface-500 mt-1">
-                      {m.account_setup_oauth_client_secret_optional()}
+                {#if oauthSavedClient && oauthUseSaved}
+                  <div class="mb-3 p-3 rounded-lg border border-surface-300 dark:border-surface-700 bg-surface-800/40">
+                    <p class="text-xs text-surface-400">
+                      {m.account_setup_oauth_saved_client()}
+                    </p>
+                    <p class="text-xs text-surface-500 font-mono mt-1 truncate" title={oauthSavedClient.client_id}>
+                      {m.account_setup_oauth_saved_client_id({
+                        suffix: oauthSavedClient.client_id.slice(-12),
+                      })}
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-sm preset-outlined-surface-500 mt-2"
+                      onclick={() => (oauthUseSaved = false)}
+                    >{m.account_setup_oauth_use_other()}</button>
+                  </div>
+                {:else}
+                  <label class="block mb-3">
+                    <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
+                      {m.account_setup_oauth_client_id_label()}
                     </span>
-                  {/if}
-                </label>
+                    <input
+                      class="input w-full mt-1 px-3 py-2 rounded-lg"
+                      bind:value={oauthClientId}
+                      autocomplete="off"
+                      spellcheck="false"
+                    />
+                  </label>
+                  <label class="block mb-3">
+                    <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
+                      {m.account_setup_oauth_client_secret_label()}
+                    </span>
+                    <PasswordInput
+                      bind:value={oauthClientSecret}
+                      class="mt-1"
+                      inputClass="px-3 py-2 rounded-lg"
+                      autocomplete="off"
+                    />
+                    {#if oauthProvider === 'microsoft'}
+                      <span class="block text-xs text-surface-500 mt-1">
+                        {m.account_setup_oauth_client_secret_optional()}
+                      </span>
+                    {/if}
+                  </label>
+                  <label class="flex items-center gap-2 mb-3 text-xs text-surface-500">
+                    <input type="checkbox" bind:checked={oauthRemember} class="w-4 h-4 rounded-sm" />
+                    {m.account_setup_oauth_remember()}
+                  </label>
+                {/if}
                 {#if oauthError}
                   <p class="text-xs text-error-500 mb-3 wrap-break-word">{oauthError}</p>
                 {/if}
