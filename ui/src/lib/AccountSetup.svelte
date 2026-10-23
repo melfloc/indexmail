@@ -1023,6 +1023,11 @@
                     ? m.account_setup_oauth_open_console_google()
                     : m.account_setup_oauth_open_console_microsoft()}
                 </button>
+                {#if oauthProvider === 'microsoft'}
+                  <p class="text-xs text-surface-500 mb-3">
+                    {m.account_setup_oauth_microsoft_tenant_hint()}
+                  </p>
+                {/if}
               {/if}
               {#if oauthConnected}
                 <div class="inline-flex items-center gap-2 text-sm text-success-500">
