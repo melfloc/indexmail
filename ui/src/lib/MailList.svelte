@@ -1973,7 +1973,7 @@
             role="button"
             tabindex="0"
             aria-pressed={selected}
-            class="w-full text-left {row.isSibling ? 'pl-12' : 'pl-3'} pr-4 py-2 border-b border-l-[3px] border-surface-100 dark:border-surface-700 transition-colors duration-150 ease-out cursor-pointer
+            class="w-full text-left {row.isSibling ? 'pl-12' : 'pl-3'} pr-4 py-2 border-b border-l-[4px] border-surface-100 dark:border-surface-700 transition-colors duration-150 ease-out cursor-pointer
               {!env.is_read ? 'border-l-primary-500' : 'border-l-transparent'}
               {selected
                 ? 'bg-primary-500/15 ring-1 ring-inset ring-primary-500/30'
@@ -1982,7 +1982,7 @@
                   : env.is_starred
                     ? 'bg-amber-500/10 hover:bg-amber-500/15'
                     : !env.is_read
-                      ? 'bg-surface-900/50 hover:bg-primary-500/10'
+                      ? 'bg-surface-800/80 hover:bg-surface-800'
                       : 'hover:bg-primary-500/10'}"
             draggable="true"
             ondragstart={(e) => onMailDragStart(e, env)}
@@ -2011,7 +2011,7 @@
                  read so a triaged inbox stays calm. -->
             {#if !env.is_read}
               <span
-                class="pointer-events-none absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary-500"
+                class="pointer-events-none absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-primary-500 ring-2 ring-surface-900"
                 aria-label="Unread"
                 title="Unread"
               ></span>
@@ -2032,7 +2032,7 @@
               />
               <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between mb-1 gap-2">
-                  <span class="text-[0.9em] {!env.is_read ? 'font-semibold' : 'font-medium text-surface-400'} truncate pr-2" title={env.from}>
+                  <span class="text-[0.9em] {!env.is_read ? 'font-semibold text-surface-50' : 'font-normal text-surface-500'} truncate pr-2" title={env.from}>
                     {parsedFrom.name || parsedFrom.email || '(unknown sender)'}
                   </span>
                   <!-- Date + crypto pill stacked vertically on the right
@@ -2043,7 +2043,7 @@
                        least once); plain mail keeps the original
                        date-only layout. -->
                   <div class="flex flex-col items-end gap-0.5 shrink-0">
-                    <span class="text-[0.8em] {!env.is_read ? 'text-primary-500 font-medium' : 'text-surface-500'}">
+                    <span class="text-[0.8em] {!env.is_read ? 'text-primary-500 font-semibold' : 'text-surface-500'}">
                       {formatDate(env.date)}
                     </span>
                     {#if env.protection === 'encrypted' || env.protection === 'signed-and-encrypted'}
@@ -2062,7 +2062,7 @@
                     {/if}
                   </div>
                 </div>
-                <p class="text-[0.94em] {!env.is_read ? 'font-medium' : ''} truncate flex items-center gap-1.5">
+                <p class="text-[0.94em] {!env.is_read ? 'font-medium text-surface-50' : 'text-surface-400'} truncate flex items-center gap-1.5">
                   <!-- Pin + flag markers (#414) lead the subject —
                        the same slot the reply icon uses, so a row
                        with several markers reads as one icon strip. -->
