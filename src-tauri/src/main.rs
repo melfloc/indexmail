@@ -3614,6 +3614,7 @@ async fn oauth_authorize(
     smtp_host: String,
     smtp_port: u16,
     trusted_certs: Option<Vec<unkai_core::models::TrustedCert>>,
+    remember_client: bool,
 ) -> Result<(), UnkaiError> {
     cmds::accounts::oauth_authorize(
         provider,
@@ -3626,6 +3627,7 @@ async fn oauth_authorize(
         smtp_host,
         smtp_port,
         trusted_certs,
+        remember_client,
     )
     .await
 }
@@ -3638,6 +3640,18 @@ fn oauth_status(account_id: String) -> Result<Option<cmds::oauth::OAuthStatus>, 
 #[tauri::command]
 fn oauth_disconnect(account_id: String) -> Result<(), UnkaiError> {
     cmds::accounts::oauth_disconnect(account_id)
+}
+
+#[tauri::command]
+fn oauth_app_status(
+    provider: cmds::oauth::OAuthProvider,
+) -> Result<Option<cmds::oauth::OAuthAppStatus>, UnkaiError> {
+    cmds::accounts::oauth_app_status(provider)
+}
+
+#[tauri::command]
+fn oauth_app_clear(provider: cmds::oauth::OAuthProvider) -> Result<(), UnkaiError> {
+    cmds::accounts::oauth_app_clear(provider)
 }
 
 #[tauri::command]
@@ -4493,6 +4507,8 @@ fn main() {
             oauth_authorize,
             oauth_status,
             oauth_disconnect,
+            oauth_app_status,
+            oauth_app_clear,
             fetch_envelopes,
             fetch_unified_envelopes,
             fetch_unified_special_envelopes,

@@ -25,6 +25,11 @@ export interface OAuthStatus {
   connected_at?: string | null
 }
 
+export interface OAuthAppStatus {
+  client_id: string
+  has_secret: boolean
+}
+
 export function addAccount(args: {
   account: Account
   password?: string | null
@@ -83,8 +88,19 @@ export function oauthAuthorize(args: {
   smtpHost: string
   smtpPort: number
   trustedCerts?: TrustedCert[] | null
+  rememberClient?: boolean
 }): Promise<void> {
   return call('oauth_authorize', args)
+}
+
+export function oauthAppStatus(args: {
+  provider: OAuthProvider
+}): Promise<OAuthAppStatus | null> {
+  return call('oauth_app_status', args)
+}
+
+export function oauthAppClear(args: { provider: OAuthProvider }): Promise<void> {
+  return call('oauth_app_clear', args)
 }
 
 export function oauthStatus(args: { accountId: string }): Promise<OAuthStatus | null> {

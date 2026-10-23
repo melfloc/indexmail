@@ -1,1 +1,5 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.69s
+    Checking unkai-store v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-store)
+    Checking unkai-mcp v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-mcp)
+    Checking unkai-commands v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/crates/unkai-commands)
+    Checking unkai-app v0.5.0 (/home/abraham/Projects/indexmail/unkai-mail/src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 22.24s
