@@ -254,6 +254,7 @@ pub async fn oauth_authorize(
     smtp_host: String,
     smtp_port: u16,
     trusted_certs: Option<Vec<unkai_core::models::TrustedCert>>,
+    remember_client: bool,
 ) -> Result<(), UnkaiError> {
     let trusted = trusted_certs.unwrap_or_default();
     oauth::authorize(
@@ -267,8 +268,23 @@ pub async fn oauth_authorize(
         &smtp_host,
         smtp_port,
         &trusted,
+        remember_client,
     )
     .await
+}
+
+/// Whether this installation already has a reusable OAuth client for
+/// the provider. Returns the public client id and whether a secret is
+/// stored; the secret itself never leaves the keychain.
+pub fn oauth_app_status(
+    provider: oauth::OAuthProvider,
+) -> Result<Option<oauth::OAuthAppStatus>, UnkaiError> {
+    oauth::app_client_status(provider)
+}
+
+/// Forget the reusable OAuth client for a provider.
+pub fn oauth_app_clear(provider: oauth::OAuthProvider) -> Result<(), UnkaiError> {
+    oauth::clear_app_client(provider)
 }
 
 /// Safe OAuth status for the Settings UI (no token material).

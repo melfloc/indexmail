@@ -547,6 +547,12 @@ pub fn delete_smime_passphrase(account_id: &str) -> Result<(), UnkaiError> {
 
 const OAUTH_SERVICE: &str = "unkai-mail-oauth";
 
+/// Machine-level OAuth *application* credentials (client id/secret).
+/// The client identifies this installation to Google/Microsoft and is
+/// reused by every account, like the single OAuth client a normal mail
+/// client ships. Account refresh tokens stay on `OAUTH_SERVICE`.
+const OAUTH_APP_SERVICE: &str = "unkai-mail-oauth-app";
+
 fn oauth_entry(account_id: &str) -> Result<Entry, UnkaiError> {
     Entry::new(OAUTH_SERVICE, account_id)
         .map_err(|e| UnkaiError::Storage(format!("keychain entry init failed: {e}")))
@@ -575,7 +581,7 @@ pub fn get_oauth(account_id: &str) -> Result<Option<String>, UnkaiError> {
     }
 }
 
-/// Remove the Google OAuth credentials for an account; no-op if missing.
+/// Remove the OAuth credentials for an account; no-op if missing.
 pub fn delete_oauth(account_id: &str) -> Result<(), UnkaiError> {
     match oauth_entry(account_id)?.delete_credential() {
         Ok(()) => {
@@ -588,6 +594,52 @@ pub fn delete_oauth(account_id: &str) -> Result<(), UnkaiError> {
         }
         Err(e) => Err(UnkaiError::Storage(format!(
             "failed to delete OAuth credentials: {e}"
+        ))),
+    }
+}
+
+// ── Machine-level OAuth application credentials ────────────────
+//
+// One OAuth client per provider, reused by every account — the model
+// regular mail clients use. The client secret for a desktop app is
+// non-confidential, but it is still a developer credential and must
+// not be committed to the repository. It lives in the OS keyring here.
+
+fn oauth_app_entry(provider: &str) -> Result<Entry, UnkaiError> {
+    Entry::new(OAUTH_APP_SERVICE, provider)
+        .map_err(|e| UnkaiError::Storage(format!("keychain entry init failed: {e}")))
+}
+
+/// Store (or overwrite) the OAuth application client for a provider.
+pub fn store_oauth_app(provider: &str, payload: &str) -> Result<(), UnkaiError> {
+    oauth_app_entry(provider)?
+        .set_password(payload)
+        .map_err(|e| UnkaiError::Storage(format!("failed to store OAuth app credentials: {e}")))?;
+    info!("Stored OAuth app client for provider '{provider}' in OS keychain");
+    Ok(())
+}
+
+/// Read the OAuth application client for a provider, if configured.
+pub fn get_oauth_app(provider: &str) -> Result<Option<String>, UnkaiError> {
+    match oauth_app_entry(provider)?.get_password() {
+        Ok(payload) => Ok(Some(payload)),
+        Err(keyring::Error::NoEntry) => Ok(None),
+        Err(e) => Err(UnkaiError::Storage(format!(
+            "failed to read OAuth app credentials: {e}"
+        ))),
+    }
+}
+
+/// Remove the stored OAuth application client for a provider.
+pub fn delete_oauth_app(provider: &str) -> Result<(), UnkaiError> {
+    match oauth_app_entry(provider)?.delete_credential() {
+        Ok(()) => {
+            info!("Deleted OAuth app client for provider '{provider}'");
+            Ok(())
+        }
+        Err(keyring::Error::NoEntry) => Ok(()),
+        Err(e) => Err(UnkaiError::Storage(format!(
+            "failed to delete OAuth app credentials: {e}"
         ))),
     }
 }

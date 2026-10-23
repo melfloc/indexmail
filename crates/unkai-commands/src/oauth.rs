@@ -174,6 +174,50 @@ pub struct OAuthStatus {
     pub connected_at: Option<DateTime<Utc>>,
 }
 
+/// Machine-level OAuth client (one per provider), reused by every
+/// account. The client id is public; the secret is the developer
+/// credential and is kept in the keychain.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OAuthAppClient {
+    pub client_id: String,
+    #[serde(default)]
+    pub client_secret: String,
+}
+
+/// Safe app-client summary for the wizard — no secret material.
+#[derive(Debug, Clone, Serialize)]
+pub struct OAuthAppStatus {
+    pub client_id: String,
+    pub has_secret: bool,
+}
+
+pub fn app_client(provider: OAuthProvider) -> Result<Option<OAuthAppClient>, UnkaiError> {
+    let Some(raw) = credentials::get_oauth_app(provider.id())? else {
+        return Ok(None);
+    };
+    serde_json::from_str(&raw)
+        .map(Some)
+        .map_err(|e| UnkaiError::Storage(format!("OAuth app credential parse failed: {e}")))
+}
+
+pub fn app_client_status(provider: OAuthProvider) -> Result<Option<OAuthAppStatus>, UnkaiError> {
+    Ok(app_client(provider)?.map(|client| OAuthAppStatus {
+        client_id: client.client_id,
+        has_secret: !client.client_secret.trim().is_empty(),
+    }))
+}
+
+pub fn set_app_client(provider: OAuthProvider, client: &OAuthAppClient) -> Result<(), UnkaiError> {
+    let raw = serde_json::to_string(client).map_err(|e| {
+        UnkaiError::Storage(format!("OAuth app credential serialization failed: {e}"))
+    })?;
+    credentials::store_oauth_app(provider.id(), &raw)
+}
+
+pub fn clear_app_client(provider: OAuthProvider) -> Result<(), UnkaiError> {
+    credentials::delete_oauth_app(provider.id())
+}
+
 #[derive(Debug, Clone)]
 struct CachedToken {
     access_token: String,
@@ -527,13 +571,25 @@ pub async fn authorize(
     smtp_host: &str,
     smtp_port: u16,
     trusted_certs: &[unkai_core::models::TrustedCert],
+    remember_client: bool,
 ) -> Result<(), UnkaiError> {
-    if client_id.trim().is_empty() {
-        return Err(UnkaiError::Auth(
-            "OAuth client ID is required — create a desktop OAuth app in the provider's developer console first".into(),
-        ));
-    }
-    if provider == OAuthProvider::Google && client_secret.trim().is_empty() {
+    // Empty client fields mean "use the one already saved for this
+    // installation". That is the normal path after the first account:
+    // the user just clicks Sign in, like any other mail client.
+    let (effective_client_id, effective_client_secret) = if client_id.trim().is_empty() {
+        let saved = app_client(provider)?.ok_or_else(|| {
+            UnkaiError::Auth(
+                "No OAuth client is configured yet — create a desktop OAuth app in the provider's developer console first".into(),
+            )
+        })?;
+        (saved.client_id, saved.client_secret)
+    } else {
+        (
+            client_id.trim().to_string(),
+            client_secret.trim().to_string(),
+        )
+    };
+    if provider == OAuthProvider::Google && effective_client_secret.trim().is_empty() {
         return Err(UnkaiError::Auth(
             "Google desktop OAuth requires the client secret from the same OAuth client".into(),
         ));
@@ -551,7 +607,7 @@ pub async fn authorize(
     let redirect_uri = server.redirect_uri(provider.redirect_host(), provider.callback_path());
     let auth_url = build_auth_url(
         provider,
-        client_id.trim(),
+        &effective_client_id,
         &redirect_uri,
         &challenge,
         &state,
@@ -602,8 +658,8 @@ pub async fn authorize(
 
     let response = exchange_code(
         provider,
-        client_id.trim(),
-        client_secret.trim(),
+        &effective_client_id,
+        &effective_client_secret,
         &code,
         &redirect_uri,
         &verifier,
@@ -618,8 +674,8 @@ pub async fn authorize(
 
     let credentials = OAuthCredentials {
         provider,
-        client_id: client_id.trim().to_string(),
-        client_secret: client_secret.trim().to_string(),
+        client_id: effective_client_id.clone(),
+        client_secret: effective_client_secret.clone(),
         refresh_token,
         email: email.trim().to_string(),
         scope: response
@@ -651,6 +707,18 @@ pub async fn authorize(
         trusted_certs,
     )
     .await?;
+
+    if remember_client && !client_id.trim().is_empty() {
+        let app = OAuthAppClient {
+            client_id: effective_client_id,
+            client_secret: effective_client_secret,
+        };
+        set_app_client(provider, &app)?;
+        tracing::info!(
+            provider = provider.id(),
+            "Saved OAuth app client for reuse by future accounts"
+        );
+    }
 
     tracing::info!(
         account_id,
