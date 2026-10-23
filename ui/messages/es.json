@@ -1145,5 +1145,6 @@
   "account_setup_oauth_remember": "Recordar este cliente para todas las cuentas de esta instalación",
   "account_setup_oauth_checking_saved": "Comprobando el cliente OAuth guardado…",
   "account_setup_oauth_open_console_google": "Abrir credenciales de Google Cloud",
-  "account_setup_oauth_open_console_microsoft": "Abrir registros de apps de Microsoft Entra"
+  "account_setup_oauth_open_console_microsoft": "Abrir registros de apps de Microsoft Entra",
+  "account_setup_oauth_microsoft_tenant_hint": "Microsoft necesita un tenant de Entra para registrar la app. Una cuenta personal de Microsoft puede crear uno con una cuenta gratuita de Azure (solo verificación de tarjeta, sin cargo); también sirve un tenant de trabajo o centro educativo. La redirección localhost se usa después de crear el cliente."
 }

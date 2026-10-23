@@ -1145,5 +1145,6 @@
   "account_setup_oauth_remember": "Remember this client for all accounts on this installation",
   "account_setup_oauth_checking_saved": "Checking the saved OAuth client…",
   "account_setup_oauth_open_console_google": "Open Google Cloud credentials",
-  "account_setup_oauth_open_console_microsoft": "Open Microsoft Entra app registrations"
+  "account_setup_oauth_open_console_microsoft": "Open Microsoft Entra app registrations",
+  "account_setup_oauth_microsoft_tenant_hint": "Microsoft needs an Entra tenant to register the app. A personal Microsoft account can create one with a free Azure account (card verification only, no charge); a work or school tenant also works. The localhost redirect is used after the client exists."
 }

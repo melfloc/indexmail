@@ -1145,5 +1145,6 @@
   "account_setup_oauth_remember": "Diesen Client für alle Konten dieser Installation merken",
   "account_setup_oauth_checking_saved": "Gespeicherter OAuth-Client wird geprüft…",
   "account_setup_oauth_open_console_google": "Google Cloud-Zugangsdaten öffnen",
-  "account_setup_oauth_open_console_microsoft": "Microsoft Entra-App-Registrierungen öffnen"
+  "account_setup_oauth_open_console_microsoft": "Microsoft Entra-App-Registrierungen öffnen",
+  "account_setup_oauth_microsoft_tenant_hint": "Microsoft braucht einen Entra-Mandanten, um die App zu registrieren. Ein persönliches Microsoft-Konto kann mit einem kostenlosen Azure-Konto einen Mandanten anlegen (nur Kartenprüfung, keine Kosten); ein Arbeits-/Schulmandant funktioniert ebenfalls. Die localhost-Weiterleitung wird erst nach dem Client verwendet."
 }

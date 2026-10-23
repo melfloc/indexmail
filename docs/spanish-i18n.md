@@ -10,7 +10,7 @@ translated so the boundary does not drift silently.
 | Piece | File |
 |---|---|
 | Locale list | `ui/project.inlang/settings.json` (`"locales": ["en", "de", "es"]`) |
-| Catalogue | `ui/messages/es.json` (1147 keys, 182 translated) |
+| Catalogue | `ui/messages/es.json` (1148 keys, 183 translated) |
 | Language picker | `LOCALE_LABELS` in `ui/src/lib/AccountSettings.svelte` (`es: 'Español'`) |
 | Compiler | Paraglide JS, existing Vite plugin — no new dependency |
 

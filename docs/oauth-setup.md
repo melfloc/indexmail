@@ -98,6 +98,40 @@ sign-in button. Google's policy prohibits committing client credentials to a
 public repository and public distribution may require verification/CASA;
 Microsoft personal accounts use a public client with no secret.
 
+## Troubleshooting: “Selected user account does not exist in tenant ‘Microsoft Services’”
+
+That error comes from **Microsoft's Entra portal**, not from Index Mail. The
+application ID in the message (`74658136-…`) is Microsoft's portal app, and
+“Microsoft Services” is the portal's default tenant. It means the signed-in
+account has no Entra tenant in which to create the app registration; the
+`http://localhost` OAuth redirect hasn't been used yet.
+
+You need one tenant to **host the app registration** (your Hotmail account stays
+a personal sign-in user):
+
+- **Free Azure account** (the usual route for a personal account): sign up at
+  <https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account>.
+  A phone number and a non-prepaid credit/debit card are required for identity
+  verification; the card isn't charged and only a temporary ~$1 hold may appear.
+  Signup creates a default Entra directory. Then go to
+  **Microsoft Entra ID → App registrations → New registration**.
+- **Work/school Microsoft 365 tenant:** use an account with at least the
+  Application Developer role. The app registration can still allow personal
+  Microsoft accounts in its sign-in audience, so your Hotmail address can use
+  it; an admin may be needed to grant API consent.
+- **Microsoft 365 Developer Program:** only if you qualify through a Visual
+  Studio Professional/Enterprise subscription or a qualifying program; it is no
+  longer a general free sandbox.
+
+In the registration choose **Personal Microsoft accounts only** (or *Any Entra
+ID tenant + Personal Microsoft accounts*), add the **Mobile and desktop
+applications** redirect `http://localhost`, enable public client flows, and add
+the Office 365 Exchange Online delegated permissions `IMAP.AccessAsUser.All`
+and `SMTP.Send`.
+
+Do not use another application's client ID: it violates the provider's terms
+and can be revoked at any time.
+
 ## Where the credentials live
 
 - The **refresh token** and the OAuth client configuration are stored in the
