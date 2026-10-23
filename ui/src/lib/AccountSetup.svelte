@@ -660,6 +660,19 @@
     if (!smtpPort) smtpPort = oauthProvider === 'google' ? 465 : 587
   }
 
+  /** The client id is created in the provider's developer console —
+   *  OAuth redirects return an authorization code, never a client id.
+   *  This button at least takes the user straight to the right page. */
+  function openOAuthConsole() {
+    const url =
+      oauthProvider === 'google'
+        ? 'https://console.cloud.google.com/apis/credentials'
+        : 'https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade'
+    void api.system.openUrl({ url }).catch((e) => {
+      console.warn('open_url failed for OAuth console', e)
+    })
+  }
+
   /** Open the provider's browser sign-in and store the refresh token
    *  in the OS keychain. The backend also tests IMAP + SMTP before
    *  this resolves, so a successful return means mail actually works. */
@@ -1000,6 +1013,16 @@
                     ? m.account_setup_oauth_explainer_google()
                     : m.account_setup_oauth_explainer_microsoft()}
                 </p>
+                <button
+                  type="button"
+                  class="btn btn-sm preset-outlined-surface-500 inline-flex items-center gap-2 mb-3"
+                  onclick={openOAuthConsole}
+                >
+                  <Icon name="cloud" size={14} />
+                  {oauthProvider === 'google'
+                    ? m.account_setup_oauth_open_console_google()
+                    : m.account_setup_oauth_open_console_microsoft()}
+                </button>
               {/if}
               {#if oauthConnected}
                 <div class="inline-flex items-center gap-2 text-sm text-success-500">

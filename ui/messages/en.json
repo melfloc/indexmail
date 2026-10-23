@@ -1143,5 +1143,7 @@
   "account_setup_oauth_saved_client_id": "Client ID ending {suffix}",
   "account_setup_oauth_use_other": "Use a different OAuth client",
   "account_setup_oauth_remember": "Remember this client for all accounts on this installation",
-  "account_setup_oauth_checking_saved": "Checking the saved OAuth client…"
+  "account_setup_oauth_checking_saved": "Checking the saved OAuth client…",
+  "account_setup_oauth_open_console_google": "Open Google Cloud credentials",
+  "account_setup_oauth_open_console_microsoft": "Open Microsoft Entra app registrations"
 }

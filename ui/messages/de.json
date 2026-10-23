@@ -1143,5 +1143,7 @@
   "account_setup_oauth_saved_client_id": "Client-ID endet auf {suffix}",
   "account_setup_oauth_use_other": "Anderen OAuth-Client verwenden",
   "account_setup_oauth_remember": "Diesen Client für alle Konten dieser Installation merken",
-  "account_setup_oauth_checking_saved": "Gespeicherter OAuth-Client wird geprüft…"
+  "account_setup_oauth_checking_saved": "Gespeicherter OAuth-Client wird geprüft…",
+  "account_setup_oauth_open_console_google": "Google Cloud-Zugangsdaten öffnen",
+  "account_setup_oauth_open_console_microsoft": "Microsoft Entra-App-Registrierungen öffnen"
 }
