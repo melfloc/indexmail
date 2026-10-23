@@ -948,6 +948,34 @@ pub struct ImapClient {
     session: Option<ImapSession>,
 }
 
+/// SASL XOAUTH2 authenticator for Gmail / Outlook.com.
+///
+/// The wire format is defined by Google's XOAUTH2 protocol and adopted
+/// by Microsoft: `user=<email>\x01auth=Bearer <token>\x01\x01`. The
+/// `async-imap` layer base64-encodes this response for us.
+struct XOAuth2Authenticator<'a> {
+    user: &'a str,
+    access_token: &'a str,
+}
+
+impl async_imap::Authenticator for XOAuth2Authenticator<'_> {
+    type Response = String;
+
+    fn process(&mut self, challenge: &[u8]) -> Self::Response {
+        // The initial SASL challenge is empty; a non-empty challenge is
+        // the provider's base64-encoded error body. Per XOAUTH2, answer
+        // that with an empty response to let the server finish the
+        // failed AUTHENTICATE cleanly instead of replaying the token.
+        if !challenge.is_empty() {
+            return String::new();
+        }
+        format!(
+            "user={}\x01auth=Bearer {}\x01\x01",
+            self.user, self.access_token
+        )
+    }
+}
+
 /// Result of a sync fetch — envelopes plus the folder's `UIDVALIDITY`.
 ///
 /// Callers store the `uidvalidity` alongside the envelopes. On the next
@@ -1001,6 +1029,40 @@ impl ImapClient {
         })?;
 
         info!("Successfully logged in as {username}");
+
+        Ok(Self {
+            session: Some(session),
+        })
+    }
+
+    /// Connect over TLS and authenticate with SASL XOAUTH2.
+    ///
+    /// Gmail and Outlook.com no longer accept a normal password over
+    /// IMAP. This path is used when the account has OAuth2 credentials
+    /// in the OS keychain; the access token is short-lived and refreshed
+    /// by the command layer before the connection is opened.
+    pub async fn connect_oauth(
+        host: &str,
+        port: u16,
+        username: &str,
+        access_token: &str,
+        trusted_certs: &[TrustedCert],
+    ) -> Result<Self, UnkaiError> {
+        info!(host, port, username, "Connecting to IMAP server (XOAUTH2)");
+
+        let stream = tls_connect(host, port, trusted_certs).await?;
+        let imap_client = async_imap::Client::new(stream);
+        let authenticator = XOAuth2Authenticator {
+            user: username,
+            access_token,
+        };
+
+        let session = imap_client
+            .authenticate("XOAUTH2", authenticator)
+            .await
+            .map_err(|(e, _)| UnkaiError::Auth(format!("IMAP XOAUTH2 login failed: {e}")))?;
+
+        info!("Successfully logged in as {username} via XOAUTH2");
 
         Ok(Self {
             session: Some(session),
@@ -4065,5 +4127,19 @@ mod tests {
              \r\n\
              just words\r\n";
         assert!(parse_mdn_report(raw).is_none());
+    }
+
+    #[test]
+    fn xoauth2_response_uses_the_sasl_wire_format() {
+        use async_imap::Authenticator;
+        let mut auth = super::XOAuth2Authenticator {
+            user: "alice@example.com",
+            access_token: "ya29.token",
+        };
+        assert_eq!(
+            auth.process(b""),
+            "user=alice@example.com\x01auth=Bearer ya29.token\x01\x01"
+        );
+        assert_eq!(auth.process(b"{\"status\":\"401\"}"), "");
     }
 }

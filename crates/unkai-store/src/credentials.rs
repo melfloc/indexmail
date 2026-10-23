@@ -530,3 +530,64 @@ pub fn delete_smime_passphrase(account_id: &str) -> Result<(), UnkaiError> {
         ))),
     }
 }
+
+// ── OAuth2 credentials ─────────────────────────────────────────
+//
+// Gmail no longer accepts a normal account password over IMAP/SMTP.
+// For accounts without an App Password we store a JSON blob here:
+// the OAuth client id/secret (app configuration, not the user's
+// Google password) plus the refresh token. The refresh token is the
+// long-lived secret; it never enters `accounts.json`, logs, or the
+// frontend. Access tokens are short-lived and kept in memory by
+// `unkai-commands::google_oauth`.
+//
+// Kept on its own keychain service so removing Google authorization
+// cannot touch the IMAP password (legacy accounts still have one) or
+// any PGP/S/MIME secret.
+
+const OAUTH_SERVICE: &str = "unkai-mail-oauth";
+
+fn oauth_entry(account_id: &str) -> Result<Entry, UnkaiError> {
+    Entry::new(OAUTH_SERVICE, account_id)
+        .map_err(|e| UnkaiError::Storage(format!("keychain entry init failed: {e}")))
+}
+
+/// Store (or overwrite) the Google OAuth credential blob for an account.
+/// The caller owns the JSON schema (`GoogleOAuthCredentials` in
+/// `unkai-commands`); this layer only persists the string.
+pub fn store_oauth(account_id: &str, payload: &str) -> Result<(), UnkaiError> {
+    oauth_entry(account_id)?
+        .set_password(payload)
+        .map_err(|e| UnkaiError::Storage(format!("failed to store OAuth credentials: {e}")))?;
+    info!("Stored OAuth credentials for account '{account_id}' in OS keychain");
+    Ok(())
+}
+
+/// Retrieve the Google OAuth credential blob, or `None` when the
+/// account is still on password authentication.
+pub fn get_oauth(account_id: &str) -> Result<Option<String>, UnkaiError> {
+    match oauth_entry(account_id)?.get_password() {
+        Ok(payload) => Ok(Some(payload)),
+        Err(keyring::Error::NoEntry) => Ok(None),
+        Err(e) => Err(UnkaiError::Storage(format!(
+            "failed to read OAuth credentials: {e}"
+        ))),
+    }
+}
+
+/// Remove the Google OAuth credentials for an account; no-op if missing.
+pub fn delete_oauth(account_id: &str) -> Result<(), UnkaiError> {
+    match oauth_entry(account_id)?.delete_credential() {
+        Ok(()) => {
+            info!("Deleted OAuth credentials for account '{account_id}'");
+            Ok(())
+        }
+        Err(keyring::Error::NoEntry) => {
+            debug!("No OAuth credentials to delete for account '{account_id}' (ok)");
+            Ok(())
+        }
+        Err(e) => Err(UnkaiError::Storage(format!(
+            "failed to delete OAuth credentials: {e}"
+        ))),
+    }
+}

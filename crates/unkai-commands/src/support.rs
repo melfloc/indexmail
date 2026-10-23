@@ -16,6 +16,7 @@ use unkai_core::models::Account;
 use unkai_core::models::NextcloudAccount;
 use unkai_imap::ImapClient;
 use unkai_jmap::JmapClient;
+use unkai_smtp::SmtpClient;
 use unkai_store::Cache;
 use unkai_store::account_store;
 use unkai_store::credentials;
@@ -257,10 +258,25 @@ pub fn load_account(cache: &Cache, id: &str) -> Result<Account, UnkaiError> {
         .ok_or_else(|| UnkaiError::Other(format!("no account with id '{id}'")))
 }
 
-/// Connect to an account's IMAP server using the stored password.
-/// Includes any per-account TLS-trusted certs so a self-signed
-/// server the user has previously accepted continues to validate.
+/// Connect to an account's IMAP server, preferring OAuth2 when the
+/// account has credentials in the keychain and falling back to the
+/// legacy stored password otherwise.
+///
+/// Includes any per-account TLS-trusted certs so a self-signed server
+/// the user has previously accepted continues to validate.
 pub async fn connect_imap(account: &Account) -> Result<ImapClient, UnkaiError> {
+    if crate::oauth::has_credentials(&account.id)? {
+        let access_token = crate::oauth::access_token(&account.id).await?;
+        return ImapClient::connect_oauth(
+            &account.imap_host,
+            account.imap_port,
+            &account.email,
+            &access_token,
+            &account.trusted_certs,
+        )
+        .await;
+    }
+
     let password = credentials::get_imap_password(&account.id)?;
     ImapClient::connect(
         &account.imap_host,
@@ -272,8 +288,39 @@ pub async fn connect_imap(account: &Account) -> Result<ImapClient, UnkaiError> {
     .await
 }
 
+/// Connect to an account's SMTP server, preferring OAuth2 when the
+/// account has credentials and falling back to the stored password.
+pub async fn connect_smtp(account: &Account) -> Result<SmtpClient, UnkaiError> {
+    if crate::oauth::has_credentials(&account.id)? {
+        let access_token = crate::oauth::access_token(&account.id).await?;
+        return SmtpClient::connect_oauth(
+            &account.smtp_host,
+            account.smtp_port,
+            &account.email,
+            &access_token,
+            &account.trusted_certs,
+        )
+        .await;
+    }
+
+    let password = credentials::get_imap_password(&account.id)?;
+    SmtpClient::connect(
+        &account.smtp_host,
+        account.smtp_port,
+        &account.email,
+        &password,
+        &account.trusted_certs,
+    )
+    .await
+}
+
 /// Connect to an account's JMAP server using the stored password.
 pub async fn connect_jmap(account: &Account) -> Result<JmapClient, UnkaiError> {
+    if crate::oauth::has_credentials(&account.id)? {
+        return Err(UnkaiError::Other(
+            "JMAP is not used by Google/Microsoft OAuth accounts".into(),
+        ));
+    }
     let jmap_url = account.jmap_url.as_deref().ok_or_else(|| {
         UnkaiError::Other(format!(
             "Account '{}' has use_jmap=true but no jmap_url configured",

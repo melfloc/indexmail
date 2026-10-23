@@ -12,6 +12,7 @@ use unkai_store::Cache;
 use unkai_store::account_store;
 use unkai_store::credentials;
 
+use crate::oauth;
 use crate::state::SettingsSyncNotify;
 
 // ── Tauri commands ──────────────────────────────────────────────
@@ -36,11 +37,35 @@ pub fn get_accounts(cache: &Cache) -> Result<Vec<Account>, UnkaiError> {
 /// `accounts` table be inspected without exposing credentials.
 pub fn add_account(
     account: Account,
-    password: String,
+    password: Option<String>,
     cache: &Cache,
     notify: &SettingsSyncNotify,
 ) -> Result<(), UnkaiError> {
-    credentials::store_imap_password(&account.id, &password)?;
+    match password {
+        Some(password) if !password.is_empty() => {
+            // A retry after a failed OAuth probe may leave a stale
+            // OAuth entry under this account id. A password account
+            // must not prefer it on the next connection.
+            if let Err(e) = oauth::disconnect(&account.id) {
+                tracing::warn!(
+                    "failed to clear stale OAuth credentials for '{}': {e}",
+                    account.id
+                );
+            }
+            credentials::store_imap_password(&account.id, &password)?;
+        }
+        _ => {
+            // OAuth accounts have no password. Refuse to persist an
+            // account that has neither authentication method — that
+            // would only fail on the first sync with a confusing
+            // "no password found" error.
+            if !oauth::has_credentials(&account.id)? {
+                return Err(UnkaiError::Auth(
+                    "account has no password and no OAuth credentials; connect it first".into(),
+                ));
+            }
+        }
+    }
     account_store::add_account(cache, account)?;
     notify.0.notify_one();
     Ok(())
@@ -59,6 +84,9 @@ pub fn remove_account(
     notify: &SettingsSyncNotify,
 ) -> Result<(), UnkaiError> {
     credentials::delete_imap_password(&id)?;
+    if let Err(e) = oauth::disconnect(&id) {
+        tracing::warn!("failed to delete OAuth credentials for account '{id}': {e}");
+    }
     // Best-effort: PGP key + passphrase belong to this account too
     // (#57).  No-op when no key was imported — we still call the
     // deleter because the keychain getter is what tells us the
@@ -103,6 +131,11 @@ pub fn update_account(
 pub fn set_account_password(id: String, password: String) -> Result<(), UnkaiError> {
     if password.is_empty() {
         return Err(UnkaiError::Other("password must not be empty".into()));
+    }
+    if oauth::has_credentials(&id)? {
+        return Err(UnkaiError::Other(
+            "this account uses OAuth2; disconnect it before switching to a password".into(),
+        ));
     }
     credentials::store_imap_password(&id, &password)
 }
@@ -202,6 +235,50 @@ pub async fn test_connection(
     let client = ImapClient::connect(&host, port, &username, &password, &trusted).await?;
     let _ = client.logout().await;
     Ok(format!("IMAP login to {host}:{port} succeeded"))
+}
+
+// ── OAuth2 commands ───────────────────────────────────────────────
+
+/// Run the browser OAuth flow for a Google or Microsoft account and
+/// store the refresh token in the OS keychain. The command tests IMAP
+/// and SMTP before returning, so the wizard can trust the result.
+#[allow(clippy::too_many_arguments)]
+pub async fn oauth_authorize(
+    provider: oauth::OAuthProvider,
+    account_id: String,
+    client_id: String,
+    client_secret: String,
+    email: String,
+    imap_host: String,
+    imap_port: u16,
+    smtp_host: String,
+    smtp_port: u16,
+    trusted_certs: Option<Vec<unkai_core::models::TrustedCert>>,
+) -> Result<(), UnkaiError> {
+    let trusted = trusted_certs.unwrap_or_default();
+    oauth::authorize(
+        provider,
+        &account_id,
+        &client_id,
+        &client_secret,
+        &email,
+        &imap_host,
+        imap_port,
+        &smtp_host,
+        smtp_port,
+        &trusted,
+    )
+    .await
+}
+
+/// Safe OAuth status for the Settings UI (no token material).
+pub fn oauth_status(account_id: String) -> Result<Option<oauth::OAuthStatus>, UnkaiError> {
+    oauth::status(&account_id)
+}
+
+/// Remove the OAuth credentials for an account.
+pub fn oauth_disconnect(account_id: String) -> Result<(), UnkaiError> {
+    oauth::disconnect(&account_id)
 }
 
 // ── JMAP commands ──────────────────────────────────────────────────

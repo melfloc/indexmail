@@ -8,7 +8,7 @@ use lettre::message::{
         HeaderValue,
     },
 };
-use lettre::transport::smtp::authentication::{Credentials, DEFAULT_MECHANISMS};
+use lettre::transport::smtp::authentication::{Credentials, DEFAULT_MECHANISMS, Mechanism};
 use lettre::transport::smtp::client::{AsyncSmtpConnection, Tls, TlsParameters};
 use lettre::transport::smtp::commands::{Data, Ehlo, Mail, Rcpt};
 use lettre::transport::smtp::extension::{
@@ -44,6 +44,11 @@ pub struct SmtpClient {
     port: u16,
     credentials: Credentials,
     tls_params: TlsParameters,
+    /// SASL mechanisms accepted for this account. Password accounts use
+    /// lettre's default PLAIN/LOGIN; OAuth2 accounts use XOAUTH2. The
+    /// DSN path opens its own connection and has to replay the same
+    /// authentication, so it reads this list instead of the default.
+    mechanisms: Vec<Mechanism>,
 }
 
 impl SmtpClient {
@@ -62,9 +67,48 @@ impl SmtpClient {
         password: &str,
         trusted_certs: &[TrustedCert],
     ) -> Result<Self, UnkaiError> {
+        Self::connect_with_auth(host, port, username, password, None, trusted_certs).await
+    }
+
+    /// Connect over TLS and authenticate with SASL XOAUTH2.
+    ///
+    /// Microsoft (Outlook.com / Microsoft 365) and some Google accounts
+    /// reject basic authentication for SMTP; this path uses the
+    /// short-lived OAuth2 access token instead of a password. The
+    /// caller refreshes the token before opening the connection.
+    pub async fn connect_oauth(
+        host: &str,
+        port: u16,
+        username: &str,
+        access_token: &str,
+        trusted_certs: &[TrustedCert],
+    ) -> Result<Self, UnkaiError> {
+        Self::connect_with_auth(
+            host,
+            port,
+            username,
+            access_token,
+            Some(Mechanism::Xoauth2),
+            trusted_certs,
+        )
+        .await
+    }
+
+    async fn connect_with_auth(
+        host: &str,
+        port: u16,
+        username: &str,
+        secret: &str,
+        mechanism: Option<Mechanism>,
+        trusted_certs: &[TrustedCert],
+    ) -> Result<Self, UnkaiError> {
         info!(host, port, username, "Connecting to SMTP server");
 
-        let credentials = Credentials::new(username.to_string(), password.to_string());
+        let credentials = Credentials::new(username.to_string(), secret.to_string());
+        let mechanisms = match mechanism {
+            Some(m) => vec![m],
+            None => DEFAULT_MECHANISMS.to_vec(),
+        };
 
         // Build a `TlsParameters` that knows about every cert the
         // user has explicitly trusted for this account. Lettre adds
@@ -76,14 +120,13 @@ impl SmtpClient {
 
         // Port 465 uses implicit TLS (wrapped from the start).
         // Port 587 (and others) use STARTTLS (upgrade after connecting).
-        let transport = if port == 465 {
+        let mut builder = if port == 465 {
             debug!("Using implicit TLS (port 465)");
             AsyncSmtpTransport::<Tokio1Executor>::relay(host)
                 .map_err(|e| UnkaiError::Network(format!("Failed to create SMTP relay: {e}")))?
                 .port(port)
                 .tls(Tls::Wrapper(tls_params.clone()))
                 .credentials(credentials.clone())
-                .build()
         } else {
             debug!("Using STARTTLS (port {port})");
             AsyncSmtpTransport::<Tokio1Executor>::starttls_relay(host)
@@ -91,8 +134,11 @@ impl SmtpClient {
                 .port(port)
                 .tls(Tls::Required(tls_params.clone()))
                 .credentials(credentials.clone())
-                .build()
         };
+        if mechanism.is_some() {
+            builder = builder.authentication(mechanisms.clone());
+        }
+        let transport = builder.build();
 
         // Test the connection by verifying we can reach the server.
         transport
@@ -108,6 +154,7 @@ impl SmtpClient {
             port,
             credentials,
             tls_params,
+            mechanisms,
         })
     }
 
@@ -438,7 +485,7 @@ impl SmtpClient {
         bytes: &[u8],
         client_id: &ClientId,
     ) -> Result<(), UnkaiError> {
-        conn.auth(DEFAULT_MECHANISMS, &self.credentials)
+        conn.auth(&self.mechanisms, &self.credentials)
             .await
             .map_err(|e| UnkaiError::Protocol(format!("SMTP authentication failed: {e}")))?;
 
