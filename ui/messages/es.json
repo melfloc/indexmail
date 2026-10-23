@@ -1143,5 +1143,7 @@
   "account_setup_oauth_saved_client_id": "Client ID termina en {suffix}",
   "account_setup_oauth_use_other": "Usar otro cliente OAuth",
   "account_setup_oauth_remember": "Recordar este cliente para todas las cuentas de esta instalación",
-  "account_setup_oauth_checking_saved": "Comprobando el cliente OAuth guardado…"
+  "account_setup_oauth_checking_saved": "Comprobando el cliente OAuth guardado…",
+  "account_setup_oauth_open_console_google": "Abrir credenciales de Google Cloud",
+  "account_setup_oauth_open_console_microsoft": "Abrir registros de apps de Microsoft Entra"
 }

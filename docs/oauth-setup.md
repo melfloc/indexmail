@@ -11,6 +11,12 @@ client ID/secret are app credentials from your own developer console, not your
 mail password, and they are stored in the keyring alongside the refresh token.
 Nothing is committed to this repository.
 
+> The OAuth card has a button that opens the provider's developer console
+> directly. **A client ID cannot be obtained by an OAuth redirect**: the redirect
+> returns an authorization code after consent; the client ID is created first in
+> the console and identifies the app. There is no self-registration endpoint for
+> Gmail/Outlook scopes.
+
 ## Google (Gmail)
 
 1. Open <https://console.cloud.google.com/> and create a project (e.g.

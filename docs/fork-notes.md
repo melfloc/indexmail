@@ -63,7 +63,7 @@ cd ui && npm run check
 - **Phase 3 — real mail and Spanish:** Gmail was configured with an App Password
   on 2026-10-22; the app authenticated to IMAP and synced the INBOX (9,032
   messages). Spanish infrastructure and the requested translated groups are in
-  place (180 translated keys). The synthetic WIP captures are in
+  place (182 translated keys). The synthetic WIP captures are in
   `docs/screenshots/`; final real-mail captures still need redaction and the
   last composer/wizard recapture (the capture script is ready).
 - **Phase 3b — OAuth2 provider support:** Google and Microsoft OAuth2/XOAUTH2
